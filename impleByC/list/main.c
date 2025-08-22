@@ -1,6 +1,14 @@
 #include "linearlist.h"
 #include "utils.h"
 
+// !在每个sort实现中,给出了相应的视频参考,以便对更好理解
+// *先备知识:
+// *时空复杂度
+// *稳定排序
+// *原地排序
+// *循环不变式
+// *分治->递归(先/后递归)
+
 int main() {
   LinearList list;
   list.data = NULL; // 假设数据指针未初始化
@@ -72,7 +80,17 @@ int main() {
  * @brief 基数排序
  * 计数排序无法对负数排序,这里不给出负数的处理;
  * 一种解决方案是对所有数字+offset变为正值,排序后再减去offset
- *
+* feauture:
+  * 1. 稳定排序
+  * 2. 空间复杂度为 O(n + k)，其中 n 是元素个数，k 是基数（通常为
+10,十进制故为 10）
+  * 3. 时间复杂度为 O(d * (n + k))，其中 d 是数字的位数，n 是元素个数，k
+是基数（通常为 10）
+  * 4. 最坏时间复杂度为 O(d * (n + k))
+  * 5. 最好时间复杂度为 O(d * (n + k))
+  * 6. 平均时间复杂度为 O(d * (n + k))
+ * ref:
+ * https://www.bilibili.com/video/BV1KrzrYeEDw/?spm_id_from=333.1391.0.0&vd_source=2df38eb18d0383a8d619977c0e144fd6
  * @param list
  */
 void radix_sort(LinearList *list) {
@@ -135,7 +153,15 @@ void radix_sort(LinearList *list) {
 
 /**
  * @brief 计数排序
- *
+ * 计数排序是一种非比较型排序算法，适用于整数范围较小的情况。
+ * feature:
+ * 1. 稳定排序
+ * 2. 空间复杂度为 O(n + k)，其中 n 是元素个数，k 是最大值 - 最小值 + 1
+ * 3. 平均时间复杂度为 O(n + k)
+ * 4. 最坏时间复杂度为 O(n + k)
+ * 5. 最好时间复杂度为 O(n + k)
+ * ref:
+ * https://www.bilibili.com/video/BV1sU4y1R7pm/?spm_id_from=333.1391.0.0&vd_source=2df38eb18d0383a8d619977c0e144fd6
  * @param list
  */
 void count_sort(LinearList *list) {
@@ -193,7 +219,15 @@ void count_sort(LinearList *list) {
 
 /**
  * @brief 希尔排序
- *
+ * 希尔排序是一种基于插入排序的改进算法，通过分组来减少比较次数。
+ * feature:
+ * 1. 不稳定排序
+ * 2. 原地排序
+ * 3. 最坏时间复杂度为 O(n^2)
+ * 4. 最好时间复杂度为 O(n log n)
+ * 5. 平均时间复杂度为 O(n^(3/2))
+ * ref:
+ * https://www.bilibili.com/video/BV1bm42137UZ/?spm_id_from=333.1391.0.0&vd_source=2df38eb18d0383a8d619977c0e144fd6
  * @param list
  */
 void shell_sort(LinearList *list) {
@@ -262,7 +296,15 @@ void merge(LinearList *list, int left, int mid, int right) {
 
 /**
  * @brief 合并排序
- *
+ * 归并排序是一种基于分治法的排序算法，时间复杂度为 O(n log n)。
+ * feature:
+ * 1. 稳定排序
+ * 2. 空间复杂度为 O(n)
+ * 3. 最坏时间复杂度为 O(n log n)
+ * 4. 最好时间复杂度为 O(n log n)
+ * 5. 平均时间复杂度为 O(n log n)
+ * ref:
+ * https://www.bilibili.com/video/BV1em1oYTEFf/?spm_id_from=333.1391.0.0&vd_source=2df38eb18d0383a8d619977c0e144fd6
  * @param list
  * @param left 左低位index
  * @param right 右高位index
@@ -313,7 +355,15 @@ void freeList(LinearList *list) {
 
 /**
  * @brief 冒泡排序
- *
+ * 冒泡排序是一种简单的排序算法，时间复杂度为 O(n^2)。
+ * feature:
+ * 1. 稳定排序
+ * 2. 原地排序
+ * 3. 最坏时间复杂度为 O(n^2)
+ * 4. 最好时间复杂度为 O(n)
+ * 5. 平均时间复杂度为 O(n^2)
+ * ref:
+ * https://www.bilibili.com/video/BV181421876R/?spm_id_from=333.1387.search.video_card.click&vd_source=2df38eb18d0383a8d619977c0e144fd6
  * @param list
  */
 void bubble_sort(LinearList *list) {
@@ -336,8 +386,9 @@ void bubble_sort(LinearList *list) {
 }
 
 /**
- * @brief 优化冒泡排序
- *
+ * @brief 改进/优化冒泡排序
+ * ref:
+ * https://www.bilibili.com/video/BV181421876R/?spm_id_from=333.337.search-card.all.click&vd_source=2df38eb18d0383a8d619977c0e144fd6
  * @param list
  */
 void opt_bubble_sort(LinearList *list) {
@@ -364,7 +415,15 @@ void opt_bubble_sort(LinearList *list) {
 
 /**
  * @brief 选择排序
- *
+ * 选择排序是一种简单的排序算法，时间复杂度为 O(n^2)。
+ * feature:
+ * 1. 不稳定排序
+ * 2. 原地排序
+ * 3. 最坏时间复杂度为 O(n^2)
+ * 4. 最好时间复杂度为 O(n^2)
+ * 5. 平均时间复杂度为 O(n^2)
+ * ref:
+ * https://www.bilibili.com/video/BV1kjsuenE8v/?spm_id_from=333.1387.search.video_card.click&vd_source=2df38eb18d0383a8d619977c0e144fd6
  * @param list
  */
 void selection_sort(LinearList *list) {
@@ -428,7 +487,15 @@ int partition(LinearList *list, int low, int high) {
 
 /**
  * @brief 快速排序
- *
+ * 快速排序是一种基于分治法的排序算法，时间复杂度为 O(n log n)。
+ * feature:
+ * 1. 不稳定排序
+ * 2. 空间复杂度为 O(log n)
+ * 3. 最坏时间复杂度为 O(n^2)
+ * 4. 最好时间复杂度为 O(n log n)
+ * 5. 平均时间复杂度为 O(n log n)
+ * ref:
+ * https://www.bilibili.com/video/BV1y4421Z7hK/?spm_id_from=333.1387.search.video_card.click&vd_source=2df38eb18d0383a8d619977c0e144fd6
  * @param list
  * @param low 低位起始索引
  * @param high 高位结束索引
@@ -449,7 +516,16 @@ void quick_sort(LinearList *list, int low, int high) {
 
 /**
  * @brief 插入排序
+ * 插入排序是一种简单的排序算法，时间复杂度为 O(n^2)。
+ * feature:
+ * 1. 稳定排序
+ * 2. 原地排序
+ * 3. 最坏时间复杂度为 O(n^2)
+ * 4. 最好时间复杂度为 O(n)
+ * 5. 平均时间复杂度为 O(n^2)
  *
+ * ref:
+ * https://www.bilibili.com/video/BV1tf421Q7eh/?spm_id_from=333.1387.search.video_card.click&vd_source=2df38eb18d0383a8d619977c0e144fd6
  * @param list
  */
 void insertion_sort(LinearList *list) {
@@ -507,7 +583,15 @@ void heapify(LinearList *list, int n, int i) {
 
 /**
  * @brief 堆排序
- *
+ * 堆排序是一种基于比较的排序算法，时间复杂度为 O(n log n)。
+ * feature:
+ * 1. 不稳定排序
+ * 2. 原地排序
+ * 3. 最坏时间复杂度为 O(n log n)
+ * 4. 最好时间复杂度为 O(n log n)
+ * 5. 平均时间复杂度为 O(n log n)
+ * ref:
+ * https://www.bilibili.com/video/BV1HYtseiEQ8/?spm_id_from=333.1387.search.video_card.click&vd_source=2df38eb18d0383a8d619977c0e144fd6
  * @param list
  */
 void heap_sort(LinearList *list) {
