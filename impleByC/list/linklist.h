@@ -1,17 +1,52 @@
 #ifndef LINKLIST_H
 #define LINKLIST_H
 
+// ---------Singly Linked List
+typedef int NodeData;
+typedef char _NodeData;
 typedef struct Node {
-  int data;          // 数据域
-  struct Node *next; // 指针域，指向下一个节点
+  NodeData data;
+  struct Node *next;
 } LinkNode;
 
 typedef struct {
-  LinkNode *head; // 链表头指针
+  int size;
+  LinkNode *head;
+  LinkNode *tail;
 } LinkList;
 
-LinkList *createList();                    // 创建链表
-void destroyList(LinkList *list);          // 销毁链表
-void insertNode(LinkList *list, int data); // 插入节点
-void deleteNode(LinkList *list, int data); // 删除节点
+// ---------Doubly Linked List
+typedef struct DNode {
+  NodeData data;
+  struct DNode *prev;
+  struct DNode *next;
+} DNode;
+
+typedef struct {
+  int size;
+  DNode *head;
+  DNode *tail;
+} DLinkList;
+
+// ---------Doubly Circular Linked List
+typedef struct CNode {
+  NodeData data;
+  struct CNode *prev;
+  struct CNode *next;
+} CNode;
+
+typedef struct {
+  int size;
+  struct CNode *head;
+} CLinkList;
+
+//-------------------------------LinkList-------------------------
+LinkNode *create_node(NodeData *data);                // 创建node
+LinkList *initList();                                 // 创建链表
+void destroyList(LinkList *list);                     // 销毁链表
+void insertNode2head(LinkList *list, LinkNode *node); // 插入结点到head
+void insertNode2tail(LinkList *list, LinkNode *node); // 插入结点到tail
+void deleteNode(LinkList *list, NodeData data); // 删除所有data为data的结点
+//-------------------------------TLinkList-------------------------
+
 #endif

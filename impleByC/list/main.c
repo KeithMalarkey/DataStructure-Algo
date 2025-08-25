@@ -1,4 +1,4 @@
-#include "linearlist.h"
+#include "linklist.h"
 #include "utils.h"
 
 // !在每个sort实现中,给出了相应的视频参考,以便对更好理解
@@ -647,6 +647,12 @@ void initializeList(LinearList *list, int capacity) {
   list->capacity = capacity;
 }
 
+/**
+ * @brief Get the Max val
+ * for array
+ * @param list
+ * @return int
+ */
 int getMax(const LinearList *list) {
   if (isEmpty(list)) {
     return -(1 << 10); // 错误处理
@@ -659,4 +665,137 @@ int getMax(const LinearList *list) {
     }
   }
   return max;
+}
+
+/**
+ * @brief Create a node in singly linked list
+ *
+ * @param data
+ * @return LinkNode*
+ */
+LinkNode *create_node(NodeData *data) {
+  if (!data) {
+    return NULL;
+  }
+
+  LinkNode *node = malloc(sizeof(LinkNode));
+  if (!node) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
+  node->data = *data;
+  node->next = NULL;
+
+  return node;
+}
+
+/**
+ * @brief initilize a singly linked list
+ *
+ * @return LinkList*
+ */
+LinkList *initList() {
+  LinkList *list = malloc(sizeof(LinkList));
+  if (!list) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
+  list->head = NULL;
+  list->tail = NULL;
+  list->size = 0;
+
+  return list;
+}
+
+/**
+ * @brief 注销单链表,释放单链表内存
+ *
+ * @param list
+ */
+void destroyList(LinkList *list) {
+  if (!list) {
+    return;
+  }
+
+  LinkNode *node = list->head;
+  while (node) {
+    LinkNode *tmp = node;
+    node = node->next;
+    free(tmp);
+  }
+  free(list);
+}
+
+void insertNode2head(LinkList *list, LinkNode *node) {
+  if (!list || !node) {
+    return;
+  }
+
+  if (!list->head) {
+    list->head = node;
+    list->tail = node;
+  } else {
+    node->next = list->head;
+    list->head = node;
+  }
+  list->size++;
+}
+
+void insertNode2tail(LinkList *list, LinkNode *node) {
+  if (!list || !node) {
+    return;
+  }
+
+  if (!list->tail) {
+    list->head = node;
+    list->tail = node;
+  } else {
+    list->tail->next = node;
+    list->tail = node;
+  }
+  list->size++;
+}
+
+/**
+ * @brief 按值删除结点
+ * 
+ * @param list 
+ * @param data 待删除的结点数据
+ */
+void deleteNode(LinkList *list, NodeData data) {
+  if (!list || !list->head) {
+    return;
+  }
+
+  LinkNode *current = list->head;
+  LinkNode *prev = NULL;
+  LinkNode *temp = NULL;
+
+  while (current) {
+    if (current->data == data) {
+      // 保存要删除的节点
+      temp = current;
+
+      if (prev) {
+        prev->next = current->next;
+      } else {
+        list->head = current->next;
+      }
+
+      if (current == list->tail) {
+        list->tail = prev;
+      }
+
+      // 移动到下一个节点
+      current = current->next;
+
+      // 释放内存
+      free(temp);
+      list->size--;
+    } else {
+      // 继续遍历
+      prev = current;
+      current = current->next;
+    }
+  }
 }
