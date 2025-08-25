@@ -31,9 +31,6 @@ typedef struct {
   QueueNode *rear;
 } Queue;
 
-// --------------------------utils-----------------------
-void dfs(Node *node); // 深度优先遍历
-
 // --------------------------stack-----------------------
 Stack *create_stack();               // 创建栈
 void push(Stack *stack, Node *node); // 入栈
@@ -73,15 +70,6 @@ bool is_symmetric(Node *root);           // 判断是否为对称树
 bool is_balanced(Node *root);            // 判断是否为平衡树
 bool is_complete(Node *root);            // 判断是否为完全二叉树
 bool is_valid_bst(Node *root);           // 判断是否为合法的二叉搜索树
-bool is_valid_bst_util(Node *root, Node *min_node, Node *max_node); // 辅助函数
-bool is_valid_bst_rec(Node *root);       // 递归判断是否为合法的二叉搜索树
-bool is_valid_bst_iter(Node *root);      // 迭代判断是否为合法的二叉搜索树
-bool is_valid_bst_rec_util(Node *root, Node *min_node, Node *max_node,
-                           int *count); // 辅助函数
-bool is_valid_bst_iter_util(Node *root, Node *min_node, Node *max_node,
-                            int *count); // 迭代辅助函数
-bool is_valid_bst_rec_util_v2(Node *root, Node *min_node, Node *max_node,
-                              int *count); // 迭代辅助函数
 int get_height(Node *root);              // 获取树高度
 int get_size(Node *node);                // 获取树结点数
 int get_leaf_size(Node *node);           // 获取叶子结点数
@@ -94,7 +82,12 @@ void collect_leaves(Node *root, Node *leaves[], int *count); // 收集叶子节�
 Node *get_parent(Node *root, Node *key);                     // 获取结点的父结点
 Node *get_twin(Node *root, Node *key); // 获取结点的兄弟结点
 Node *get_lowest_common_ancestor(Node *root, Node *a,
-                                 Node *b);   // 获取结点a,b的公共前驱结点
-Node **get_leafs(Node *root, int leaf_size); // 获取所有叶子结点数组
+                                 Node *b); // 获取结点a,b的公共前驱结点
+Node *build_from_pre_in(NodeData *preorder, NodeData *inorder); // 前中序构建树
+Node *build_from_post_in(NodeData *postorder,
+                         NodeData *inorder);       // 中后序构建树
+Node **get_leafs(Node *root, int leaf_size);       // 获取所有叶子结点数组
+Node **get_branch_nodes(Node *root);               // 获取所有分支结点
+Node **get_cousin_nodes(Node *root, Node *target); // 获取所有堂兄弟结点
 
 #endif

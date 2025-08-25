@@ -1,6 +1,4 @@
-
 #include "utils.h"
-#include <stdbool.h>
 
 /**
  * @brief SAMPLE
@@ -87,6 +85,24 @@ int main() {
     printf("The two trees are different.\n");
   }
 
+  // Test cousin nodes
+  Node **cns = get_cousin_nodes(tree2, search(tree2, 'D'));
+  if (cns != NULL) {
+    printf("Cousin nodes of 'D': ");
+    int cousin_count = 0;
+    while (cns[cousin_count] != NULL)
+      cousin_count++; // count cousins if NULL-terminated
+    // If not NULL-terminated, use get_size(tree2) or track count in
+    // get_cousin_nodes
+    for (int i = 0; i < cousin_count; ++i) {
+      printf("%c ", cns[i]->data);
+    }
+    printf("\n");
+    free(cns);
+  } else {
+    printf("No cousin nodes found for 'D'.\n");
+  }
+
   // Test is_symmetric
   char *source3 = "ABCD##JM";
   char *source4 = "ABBDDDDC######C";
@@ -105,6 +121,13 @@ int main() {
       printf("Tree %d is not symmetric.\n", i + 1);
     }
     free_tree(trees[i]);
+  }
+
+  // Test complete binary tree
+  if (is_complete(tree)) {
+    printf("Tree 0 is complete tree\n");
+  } else {
+    printf("Tree 0 is not complete tree\n");
   }
 
   // Test get lowest common ancestor
@@ -129,6 +152,7 @@ int main() {
   char *source5 = "ABC#DXF##KESYU#";
   Node *wt = initialize_tree(source5);
   printf("tree width is %d\n", max_width(wt));
+
   return 0;
 }
 
@@ -965,17 +989,348 @@ void invert_tree(Node *root) {
   root->right = temp;
 }
 
+/**
+ * @brief 平衡二叉树判断
+ *
+ * @param root root ptr
+ * @return true
+ * @return false
+ */
 bool is_balanced(Node *root) {
   if (is_empty_tree(root)) {
     return true;
   }
   int leftDepth = get_height(root->left);
   int rightDepth = get_height(root->right);
-  if (leftDepth == -1 || rightDepth == -1) {
-    return false;
-  }
   if (abs(leftDepth - rightDepth) > 1) {
     return false;
   }
   return is_balanced(root->left) && is_balanced(root->right);
+}
+
+/**
+ * @brief 完全二叉树判断
+ *
+ * @param root root ptr
+ * @return true 完全二叉树
+ * @return false 非完全二叉树
+ */
+bool is_complete(Node *root) {
+  if (root == NULL) {
+    return true;
+  }
+
+  Queue *queue = create_queue();
+  queue_push(queue, root);
+  bool leafPhase = false; // phase flag for leaf nodes
+  while (!is_empty_queue(queue)) {
+    Node *current = queue_pop(queue);
+    if (current->left != NULL) {
+      // leaf nodes have no left child, so it is not a complete
+      if (leafPhase) {
+        free_queue(queue);
+        return false;
+      }
+      // for the nodes that are not leaves, into the queue by order that level
+      // traversal
+      queue_push(queue, current->left);
+    } else {
+      leafPhase = true;
+    }
+
+    if (current->right != NULL) {
+      if (leafPhase) {
+        free_queue(queue);
+        return false;
+      }
+      queue_push(queue, current->right);
+    } else {
+      leafPhase = true;
+    }
+  }
+
+  free_queue(queue);
+  return true;
+}
+
+/**
+ * @brief 二叉搜索树binary search tree判定
+ *
+ * @param root
+ * @return true
+ * @return false
+ */
+bool is_valid_bst(Node *root) {
+  if (is_empty_tree(root)) {
+    return true;
+  }
+
+  Node *prev = NULL;
+  Stack *stack = create_stack();
+  Node *current = root;
+  while (current != NULL || !is_empty_stack(stack)) {
+    while (current != NULL) {
+      push(stack, current);
+      current = current->left;
+    }
+    current = pop(stack);
+    if (prev != NULL && prev->data >= current->data) {
+      free_stack(stack);
+      return false;
+    }
+    prev = current;
+    current = current->right;
+  }
+  free_stack(stack);
+  return true;
+}
+
+/**
+ * @brief branch nodes collector 分支结点收集器
+ *
+ * @param node root
+ * @param arr collector
+ * @param cnt counter
+ */
+void collect_branches(Node *node, Node **arr, int *cnt) {
+  if (is_empty_tree(node))
+    return;
+  if ((node->left != NULL && node->left->data != NULL_NODE) ||
+      (node->right != NULL && node->right->data != NULL_NODE)) {
+    arr[(*cnt)++] = node;
+  }
+  collect_branches(node->left, arr, cnt);
+  collect_branches(node->right, arr, cnt);
+}
+
+/**
+ * @brief Get the branch nodes object 分支结点
+ *
+ * @param root root ptr
+ * @return Node**
+ */
+Node **get_branch_nodes(Node *root) {
+  if (is_empty_tree(root)) {
+    return NULL;
+  }
+
+  int total = get_size(root);
+  Node **branches = (Node **)malloc(total * sizeof(Node *));
+  if (!branches) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
+
+  int count = 0;
+  collect_branches(root, branches, &count);
+  Node **result = (Node **)malloc(count * sizeof(Node *));
+  if (!result) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
+  for (int i = 0; i < count; ++i) {
+    result[i] = branches[i];
+  }
+  free(branches);
+  return result;
+}
+
+/**
+ * @brief Get the cousin nodes object 堂兄弟结点
+ *
+ * @param root root
+ * @param target target node
+ * @return Node**
+ */
+Node **get_cousin_nodes(Node *root, Node *target) {
+  if (is_empty_tree(root) || target == NULL) {
+    return NULL;
+  }
+
+  int target_level = get_level(root, target);
+  if (target_level < 2) {
+    // 根结点没有堂兄弟
+    return NULL;
+  }
+
+  int cousin_count = 0;
+  int total_nodes = get_size(root);
+  Node **cousins = (Node **)malloc(total_nodes * sizeof(Node *));
+  if (!cousins) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
+
+  Queue *queue = create_queue();
+  queue_push(queue, root);
+
+  while (!is_empty_queue(queue)) {
+    int level_size = queue->length;
+    for (int i = 0; i < level_size; ++i) {
+      Node *current = queue_pop(queue);
+      // 检查当前结点的子结点是否和target同层且不是兄弟
+      if (get_level(root, current) == target_level - 1) {
+        // 当前结点的子结点在target层
+        if (current->left && current->left != target &&
+            current->left->data != NULL_NODE &&
+            get_parent(root, target) != current) {
+          cousins[cousin_count++] = current->left;
+        }
+        if (current->right && current->right != target &&
+            current->right->data != NULL_NODE &&
+            get_parent(root, target) != current) {
+          cousins[cousin_count++] = current->right;
+        }
+      }
+      if (current->left)
+        queue_push(queue, current->left);
+      if (current->right)
+        queue_push(queue, current->right);
+    }
+  }
+
+  free_queue(queue);
+
+  if (cousin_count == 0) {
+    free(cousins);
+    return NULL;
+  }
+
+  Node **result = (Node **)malloc(cousin_count * sizeof(Node *));
+  if (!result) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
+  for (int i = 0; i < cousin_count; ++i) {
+    result[i] = cousins[i];
+  }
+  free(cousins);
+  return result;
+}
+
+/**
+ * @brief 先序遍历 & 中序遍历 构建二叉树
+ *
+ * @param preorder 先序遍历序列
+ * @param inorder 中序遍历序列
+ * @return Node* 根结点指针
+ */
+Node *build_from_pre_in(NodeData *preorder, NodeData *inorder) {
+  if (preorder == NULL || inorder == NULL || strlen(preorder) == 0 ||
+      strlen(inorder) == 0) {
+    return NULL;
+  }
+  int len = strlen(preorder);
+  if (len == 0)
+    return NULL;
+
+  // 根结点为先序第一个
+  NodeData root_val = preorder[0];
+  if (root_val == NULL_NODE)
+    return NULL;
+  Node *root = create_tree();
+  root->data = root_val;
+
+  // 在中序序列中查找根结点位置
+  int root_idx = 0;
+  while (root_idx < len && inorder[root_idx] != root_val) {
+    root_idx++;
+  }
+
+  // 构建左子树
+  if (root_idx > 0) {
+    char *left_pre = (char *)malloc(root_idx + 1);
+    char *left_in = (char *)malloc(root_idx + 1);
+    strncpy(left_pre, preorder + 1, root_idx);
+    left_pre[root_idx] = '\0';
+    strncpy(left_in, inorder, root_idx);
+    left_in[root_idx] = '\0';
+    root->left = build_from_pre_in(left_pre, left_in);
+    free(left_pre);
+    free(left_in);
+  } else {
+    root->left = NULL;
+  }
+
+  // 构建右子树
+  int right_len = len - root_idx - 1;
+  if (right_len > 0) {
+    char *right_pre = (char *)malloc(right_len + 1);
+    char *right_in = (char *)malloc(right_len + 1);
+    strncpy(right_pre, preorder + root_idx + 1, right_len);
+    right_pre[right_len] = '\0';
+    strncpy(right_in, inorder + root_idx + 1, right_len);
+    right_in[right_len] = '\0';
+    root->right = build_from_pre_in(right_pre, right_in);
+    free(right_pre);
+    free(right_in);
+  } else {
+    root->right = NULL;
+  }
+
+  return root;
+}
+
+/**
+ * @brief 后序遍历 & 中序遍历 构建二叉树
+ *
+ * @param inorder 中序遍历序列
+ * @param postorder 后序遍历序列
+ * @return Node* 根结点指针
+ */
+Node *build_from_in_post(NodeData *inorder, NodeData *postorder) {
+  if (inorder == NULL || postorder == NULL || strlen(inorder) == 0 ||
+      strlen(postorder) == 0) {
+    return NULL;
+  }
+  int len = strlen(inorder);
+  if (len == 0)
+    return NULL;
+
+  // 根结点为后序最后一个
+  NodeData root_val = postorder[len - 1];
+  if (root_val == NULL_NODE)
+    return NULL;
+
+  Node *root = create_tree();
+  root->data = root_val;
+
+  // 在中序序列中查找根结点位置
+  int root_idx = 0;
+  while (root_idx < len && inorder[root_idx] != root_val) {
+    root_idx++;
+  }
+
+  // 构建左子树
+  if (root_idx > 0) {
+    char *left_in = (char *)malloc(root_idx + 1);
+    char *left_post = (char *)malloc(root_idx + 1);
+    strncpy(left_in, inorder, root_idx);
+    left_in[root_idx] = '\0';
+    strncpy(left_post, postorder, root_idx);
+    left_post[root_idx] = '\0';
+    root->left = build_from_in_post(left_in, left_post);
+    free(left_in);
+    free(left_post);
+  } else {
+    root->left = NULL;
+  }
+
+  // 构建右子树
+  int right_len = len - root_idx - 1;
+  if (right_len > 0) {
+    char *right_in = (char *)malloc(right_len + 1);
+    char *right_post = (char *)malloc(right_len + 1);
+    strncpy(right_in, inorder + root_idx + 1, right_len);
+    right_in[right_len] = '\0';
+    strncpy(right_post, postorder + root_idx, right_len);
+    right_post[right_len] = '\0';
+    root->right = build_from_in_post(right_in, right_post);
+    free(right_in);
+    free(right_post);
+  } else {
+    root->right = NULL;
+  }
+
+  return root;
 }
