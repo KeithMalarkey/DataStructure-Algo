@@ -1,8 +1,17 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+const int NULL_NODE = -(1 << 10);
+
+typedef int NodeData;
+
 typedef struct Node {
-  int data;
+  NodeData data;
   struct Node *left;
   struct Node *right;
 } Node;
@@ -12,35 +21,37 @@ typedef struct {
   int depth;
 } Stack;
 
-// --------------------------stack-----------------------
-Stack *create_stack();
-void push(Stack *stack, Node *node);
-Node *pop(Stack *stack);
-Node *peek(Stack *stack);
-bool is_empty_stack(Stack *stack);
-void free_stack(Stack *stack);
+typedef struct QueueNode {
+  Node *node;
+  struct QueueNode *next;
+} QueueNode;
 
-// --------------------------binary tree------------------------
-Node *create_tree();
-Node *initialize_tree(int *source);
+typedef struct {
+  int length;
+  QueueNode *front;
+  QueueNode *rear;
+} Queue;
+
+
+// -------------------------------queue--------------------------
+Queue *create_queue();
+Node *dequeue(Queue *queue);
+Node *peek_front(Queue *queue);
+void enqueue(Queue *queue, Node *node);
+bool is_empty_queue(Queue *queue);
+void free_queue(Queue *queue);
+
+// -------------------------------binary tree--------------------
+bool is_empty_tree(Node *root);
+Node *create_tree_node(NodeData data);
+Node *initialize_tree(NodeData *source);
+void level_order_traversal(Node *root);
+void pre_order_traversal(Node *root);
+void in_order_traversal(Node *root);
+void post_order_traversal(Node *root);
 void free_tree(Node *node);
-bool is_empty_tree(Node *tree);
 
-void preorder_traversal(Node *node);
-void not_incur_preorder_traversal(Node *node);
-void inorder_traversal(Node *node);
-void not_incur_inorder_traversal(Node *node);
-void postorder_traversal(Node *node);
-void not_incur_postorder_traversal(Node *node);
-void level_order_traversal(Node *node);
-Node *search(Node *root, int target);
-
-// ------------------superior operation on binary tree-------------
-int get_height(Node *root);              // 获取树高度
-int get_size(Node *node);                // 获取树结点数
-int get_leaf_size(Node *node);           // 获取叶子结点数
-int get_k_level_size(Node *node, int k); // 获取第k层结点数
-int get_level(Node *root, Node *key);    // 获取结点所在层数
-Node *get_parent(Node *root, Node *key);
+// -------------------------------bst-----------------------------
+Node *search_on_bst(Node *root, int target);
 
 #endif

@@ -1,5 +1,6 @@
 #include "linklist.h"
 #include "utils.h"
+#include <stdio.h>
 
 // !在每个sort实现中,给出了相应的视频参考,以便对更好理解
 // *先备知识:
@@ -8,6 +9,7 @@
 // *原地排序
 // *循环不变式
 // *分治->递归(先/后递归)
+// todo跳表
 
 int main() {
   LinearList list;
@@ -73,8 +75,12 @@ int main() {
   radix_sort(&sortList);
   printList(&sortList);
 
+  test_on_linklist();
   return 0;
 }
+
+// ------------------------------------- LinearList
+// --------------------------------
 
 /**
  * @brief 基数排序
@@ -667,6 +673,52 @@ int getMax(const LinearList *list) {
   return max;
 }
 
+// ------------------------------------------ 链表
+// ----------------------------------------
+
+//----------------------------------------单链表---------------------------
+void test_on_linklist() {
+  LinkList *list = initList();
+  printf("List is empty: %d\n", isEmptyList(list));
+  int arr[] = {12, 23, 37, 46, 58};
+  for (int i = 0; i < 5; i++) {
+    LinkNode *node = create_node(&arr[i]);
+    insertNode2head(list, node);
+  }
+
+  print_list(list);
+  printf("List is empty: %d\n", isEmptyList(list));
+  int app = 65;
+  insertNode2tail(list, create_node(&app));
+  print_list(list);
+  printf("List size: %d\n", list->size);
+  reverse_list(list);
+  printf("List is after reverse:\n");
+  print_list(list);
+
+  deleteNode(list, 37);
+  printf("after deleting 37,List size: %d\n", list->size);
+  printf("after deleting 37,List is\n");
+  print_list(list);
+
+  Map *map = checkin_node(list);
+  print_map(map);
+  free_map(map);
+
+  destroyList(list);
+}
+
+void print_list(LinkList *list) {
+  int i = 0;
+  for (LinkNode *node = list->head; node != NULL; node = node->next) {
+    printf("Node %d data: %d\n", i++, node->data);
+  }
+}
+
+bool isEmptyList(const LinkList *list) {
+  return list->size == 0 || list == NULL;
+}
+
 /**
  * @brief Create a node in singly linked list
  *
@@ -707,6 +759,14 @@ LinkList *initList() {
   return list;
 }
 
+void create_list(int arr[]) {
+  LinkList *list = initList();
+  for (int i = 0; i < 5; i++) {
+    LinkNode *node = create_node(&arr[i]);
+    insertNode2tail(list, node);
+  }
+}
+
 /**
  * @brief 注销单链表,释放单链表内存
  *
@@ -726,6 +786,12 @@ void destroyList(LinkList *list) {
   free(list);
 }
 
+/**
+ * @brief 插入结点到头部
+ *
+ * @param list
+ * @param node
+ */
 void insertNode2head(LinkList *list, LinkNode *node) {
   if (!list || !node) {
     return;
@@ -741,6 +807,12 @@ void insertNode2head(LinkList *list, LinkNode *node) {
   list->size++;
 }
 
+/**
+ * @brief 插入结点到尾部
+ *
+ * @param list
+ * @param node
+ */
 void insertNode2tail(LinkList *list, LinkNode *node) {
   if (!list || !node) {
     return;
@@ -758,8 +830,8 @@ void insertNode2tail(LinkList *list, LinkNode *node) {
 
 /**
  * @brief 按值删除结点
- * 
- * @param list 
+ *
+ * @param list
  * @param data 待删除的结点数据
  */
 void deleteNode(LinkList *list, NodeData data) {
@@ -776,6 +848,7 @@ void deleteNode(LinkList *list, NodeData data) {
       // 保存要删除的节点
       temp = current;
 
+      // 删除结点
       if (prev) {
         prev->next = current->next;
       } else {
@@ -799,3 +872,166 @@ void deleteNode(LinkList *list, NodeData data) {
     }
   }
 }
+
+/**
+ * @brief 按位置删除结点
+ *
+ * @param list
+ * @param position 0...size-1
+ */
+void _deleteNode(LinkList *list, int position) {
+  if (isEmptyList(list)) {
+    return;
+  }
+  if (position < 0 || position >= list->size) {
+    return;
+  }
+
+  LinkNode *current = list->head;
+  LinkNode *prev = NULL;
+  int i = 0;
+  while (current) {
+    if (i == position) {
+      // 保存要删除的节点
+      LinkNode *temp = current;
+
+      // 删除结点
+      if (prev) {
+        prev->next = current->next;
+      } else {
+        list->head = current->next;
+      }
+
+      if (current == list->tail) {
+        list->tail = prev;
+      }
+
+      // 移动到下一个节点
+      current = current->next;
+
+      // 释放内存
+      free(temp);
+      list->size--;
+      return;
+    } else {
+      // 继续遍历
+      prev = current;
+      current = current->next;
+      i++;
+    }
+  }
+}
+
+/**
+ * @brief map初始化
+ *
+ * @param map
+ */
+void map_init(Map *map) {
+  map->entries = NULL;
+  map->size = 0;
+  map->capacity = 0;
+}
+
+/**
+ * @brief map添加元素
+ *
+ * @param map
+ * @param position
+ * @param data
+ * @return int
+ */
+int map_append(Map *map, int position, LinkNode *data) {
+  // 检查是否需要扩容
+  if (map->size >= map->capacity) {
+    int new_capacity = (map->capacity == 0) ? 4 : map->capacity * 2;
+    struct MapEntry *new_data = (struct MapEntry *)realloc(
+        map->entries, new_capacity * sizeof(struct MapEntry));
+
+    if (new_data == NULL) {
+      return -1; // 内存分配失败
+    }
+
+    map->entries = new_data;
+    map->capacity = new_capacity;
+  }
+
+  // 添加新元素
+  map->entries[map->size].pos = position;
+  map->entries[map->size].node = data;
+  map->size++;
+
+  return 0;
+}
+
+/**
+ * @brief 释放map
+ *
+ * @param map
+ */
+void free_map(Map *map) {
+  free(map->entries);
+  map->entries = NULL;
+  map->size = 0;
+  map->capacity = 0;
+}
+
+/**
+ * @brief 打印map
+ *
+ * @param map
+ */
+void print_map(Map *map) {
+  printf("Found %d matches:\n", map->size);
+  for (int i = 0; i < map->size; i++) {
+    printf("  Position: %d, Data: %d\n", map->entries[i].pos,
+           map->entries[i].node->data);
+  }
+}
+
+/**
+ * @brief 符合要求的结点加入Map
+ *
+ * @param list
+ * @return Map*
+ */
+Map *checkin_node(LinkList *list) {
+  Map *map = (Map *)malloc(sizeof(Map));
+  map_init(map);
+  LinkNode *current = list->head;
+  int i = 0;
+  while (current) {
+    if (current->data % 2 == 0) { // 自由更改条件
+      map_append(map, i, current);
+    }
+    current = current->next;
+    i++;
+  }
+
+  return map;
+}
+
+/**
+ * @brief 反转链表
+ * 
+ * @param list 
+ */
+void reverse_list(LinkList *list) {
+  LinkNode *prev = NULL;
+  LinkNode *current = list->head;
+  LinkNode *next = NULL;
+
+  while (current) {
+    next = current->next;
+    current->next = prev;
+    prev = current;
+    current = next;
+  }
+
+  list->head = prev;
+}
+
+// ---------------------------------- 双链表 -----------------------------
+
+// --------------------------------------- 循环双链表
+// ------------------------------
