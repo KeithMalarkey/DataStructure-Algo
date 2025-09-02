@@ -25,9 +25,9 @@ int main() {
   // insertion_sort(sortList);
   // merge_sort(sortList, 0, sortList.size() - 1);
   // shell_sort(sortList);
-  count_sort(sortList);
+  // count_sort(sortList);
   // opt_bubble_sort(sortList);
-  // radix_sort(sortList);
+  radix_sort(sortList);
   printList(sortList);
 
   return 0;
@@ -80,7 +80,6 @@ void radix_sort(std::vector<int> &list) {
 void count_sort(std::vector<int> &list) {
   if (list.empty())
     return;
-
   int min = list[0], max = list[0];
   for (int i = 1; i < list.size(); ++i) {
     min = std::min(min, list[i]);
@@ -173,20 +172,6 @@ void merge_sort(std::vector<int> &list, const int &left, const int &right) {
   }
 }
 
-// 获取线性表的第一个元素
-int getFirst(const std::vector<int> &list) {
-  if (list.empty())
-    return -(1 << 10);
-  return list[0];
-}
-
-// 获取线性表的最后一个元素
-int getLast(const std::vector<int> &list) {
-  if (list.empty())
-    return -(1 << 10);
-  return list[list.size() - 1];
-}
-
 /**
  * @brief 冒泡排序
  *
@@ -237,7 +222,7 @@ void selection_sort(std::vector<int> &list) {
   if (list.empty())
     return;
 
-  std::cout << "selection_sort result:\n";
+  std::cout << "selection_sort result: ";
   for (int i = 0; i < list.size() - 1; ++i) {
     int minIndex = i;
     for (int j = i + 1; j < list.size(); ++j)
@@ -362,21 +347,3 @@ void printList(const std::vector<int> &list) {
   std::for_each(list.begin(), list.end(), [](int x) { std::cout << x << " "; });
   std::cout << "\n";
 }
-
-// /**
-//  * @brief Get the Max object from the array.
-//  *
-//  * @param list
-//  * @return int
-//  */
-// int getMax(const std::vector<int> &list) {
-//   if (list.empty())
-//     return -(1 << 10);
-
-//   int max = list[0];
-//   std::for_each(list, list + list.size(), [&max](int x) {
-//     if (x > max)
-//       max = x;
-//   });
-//   return max;
-// }

@@ -6,52 +6,39 @@
 #include <stdlib.h>
 #include <string.h>
 
-const int NULL_NODE = -(1 << 10);
+typedef int NodeValue;
+typedef struct TreeNode {
+  NodeValue value;
+  struct TreeNode *left;
+  struct TreeNode *right;
+} TreeNode;
 
-typedef int NodeData;
+// -------- Threaded Binary Tree
 
-typedef struct Node {
-  NodeData data;
-  struct Node *left;
-  struct Node *right;
-} Node;
+typedef struct ThreadedTreeNode {
+  NodeValue value;
+  struct ThreadedTreeNode *left;
+  struct ThreadedTreeNode *right;
+  bool isLeftThreaded;  // true if left child is threaded
+  bool isRightThreaded; // true if right child is threaded
+} ThreadedTreeNode;
 
-typedef struct {
-  Node **nodes;
-  int depth;
-} Stack;
+ThreadedTreeNode *createThreadedTreeNode(NodeValue value);
+void deleteThreadedTreeNode(ThreadedTreeNode *node);
 
-typedef struct QueueNode {
-  Node *node;
-  struct QueueNode *next;
-} QueueNode;
+// -------- AVL
+ThreadedTreeNode *createThreadedTreeNode(NodeValue value);
+ThreadedTreeNode *initThreadedBinaryTree(ThreadedTreeNode *root, int size);
+void threaded_left_rotate(ThreadedTreeNode **root);
+void threaded_right_rotate(ThreadedTreeNode **root);
+void threaded_insert(ThreadedTreeNode **root, ThreadedTreeNode *node);
+void threaded_delete(ThreadedTreeNode **root, ThreadedTreeNode *node);
+void inorder_threaded_traversal(ThreadedTreeNode *root);
+void preorder_threaded_traversal(ThreadedTreeNode *root);
+void postorder_threaded_traversal(ThreadedTreeNode *root);
 
-typedef struct {
-  int length;
-  QueueNode *front;
-  QueueNode *rear;
-} Queue;
+// -------- BST
 
-
-// -------------------------------queue--------------------------
-Queue *create_queue();
-Node *dequeue(Queue *queue);
-Node *peek_front(Queue *queue);
-void enqueue(Queue *queue, Node *node);
-bool is_empty_queue(Queue *queue);
-void free_queue(Queue *queue);
-
-// -------------------------------binary tree--------------------
-bool is_empty_tree(Node *root);
-Node *create_tree_node(NodeData data);
-Node *initialize_tree(NodeData *source);
-void level_order_traversal(Node *root);
-void pre_order_traversal(Node *root);
-void in_order_traversal(Node *root);
-void post_order_traversal(Node *root);
-void free_tree(Node *node);
-
-// -------------------------------bst-----------------------------
-Node *search_on_bst(Node *root, int target);
+// -------- Huffman
 
 #endif

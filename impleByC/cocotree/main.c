@@ -1,284 +1,226 @@
 #include "utils.h"
 
+// ***********
+// * 线索二叉树
 // * 二叉搜索树
 // * 二叉平衡树
 // * 红黑树
-// * 哈夫曼树/哈夫曼编码
+// * 哈(霍)曼树/霍夫曼编码
 
 int main() { return 0; }
 
-// -------------------------------------------tree--------------------------------------------
-Node *create_tree_node(NodeData data) {
-  Node *root = malloc(sizeof(Node));
-  if (root == NULL) {
-    fprintf(stderr, "Memory allocation failed\n");
-    exit(EXIT_FAILURE);
-  }
-  root->data = data;
-  root->left = NULL;
-  root->right = NULL;
-  return root;
-}
+// ***********线索化二叉树**********
+void test_on_threaded_tree() {}
 
 /**
- * @brief 若source中全为NULL_NODE,则视为单一字符模式
- *
- * @param source 构建字符数组
- * @return true 单一字符模式
- * @return false 非单一字符模式
+ * @brief Create a Threaded Tree Node object
+ * 
+ * @param value value of the node.
+ * @return ThreadedTreeNode* a node of Threaded Tree.
  */
-bool single_pattern(NodeData *source) {
-  int len = strlen(source);
-  for (int i = 0; i < len; ++i) {
-    if (source[i] != NULL_NODE) {
-      return false;
-    }
-  }
-  return true;
-}
-
-/**
- * @brief 树初始化
- *
- * @param source 结点数据源
- * @return Node* root指针
- */
-Node *initialize_tree(NodeData *source) {
-  if (source == NULL || strlen(source) == 0 || single_pattern(source)) {
-    return create_tree_node(NULL);
-  }
-
-  int len = sizeof(source) / sizeof(NodeData[0]);
-  Node **nodes = malloc(len * sizeof(Node *));
-  if (!nodes) {
-    fprintf(stderr, "Memory allocation failed\n");
-    exit(EXIT_FAILURE);
-  }
-
-  for (int i = 0; i < len; ++i) {
-    nodes[i] = create_tree_node(NULL);
-    nodes[i]->data = source[i];
-  }
-
-  for (int i = 0; i < len; ++i) {
-    int left = 2 * i + 1;
-    int right = 2 * i + 2;
-    if (left < len)
-      nodes[i]->left = nodes[left];
-    if (right < len)
-      nodes[i]->right = nodes[right];
-  }
-
-  Node *root = nodes[0];
-  free(nodes);
-  return root;
-}
-
-/**
- * @brief 初始化树群
- *
- * @param source 结点数据源数组
- * @return Node** 树群指针数组
- */
-Node **initialize_trees(NodeData **source) {
-  if (source == NULL) {
-    return NULL;
-  }
-
-  int count = 0;
-  while (source[count] != NULL) {
-    count++;
-  }
-
-  Node **trees = malloc(count * sizeof(Node *));
-  if (!trees) {
-    fprintf(stderr, "Memory allocation failed\n");
-    exit(EXIT_FAILURE);
-  }
-
-  for (int i = 0; i < count; ++i) {
-    trees[i] = initialize_tree(source[i]);
-  }
-
-  return trees;
-}
-
-bool is_empty_tree(Node *root) {
-  return root == NULL || root->data == NULL_NODE;
-}
-
-void preorder_traversal(Node *node) {
-  if (is_empty_tree(node)) {
-    return;
-  }
-  printf("%d ", node->data);
-  preorder_traversal(node->left);
-  preorder_traversal(node->right);
-}
-
-void inorder_traversal(Node *node) {
-  if (is_empty_tree(node)) {
-    return;
-  }
-  inorder_traversal(node->left);
-  printf("%d ", node->data);
-  inorder_traversal(node->right);
-}
-
-void postorder_traversal(Node *node) {
-  if (is_empty_tree(node)) {
-    return;
-  }
-  postorder_traversal(node->left);
-  postorder_traversal(node->right);
-  printf("%d ", node->data);
-}
-
-void level_order_traversal(Node *node) {
-  if (is_empty_tree(node)) {
-    return;
-  }
-  Queue *queue = create_queue();
-  enqueue(queue, node);
-  while (!is_empty_queue(queue)) {
-    Node *front = dequeue(queue);
-    printf("%d ", front->data);
-    if (front->left != NULL) {
-      enqueue(queue, front->left);
-    }
-    if (front->right != NULL) {
-      enqueue(queue, front->right);
-    }
-  }
-  free_queue(queue);
-}
-
-// -------------------------------------------BST--------------------------------------------
-
-/**
- * @brief 二叉搜索树的搜索
- *
- * @param root
- * @param target
- * @return Node*
- */
-Node *search_on_bst(Node *root, int target) {
-  if (root == NULL || root->data == target) {
-    return root;
-  }
-  if (target < root->data) {
-    return search_on_bst(root->left, target); // 左子树
-  } else {
-    return search_on_bst(root->right, target); // 右子树
-  }
-}
-
-// -------------------------------------------queue--------------------------------------------
-
-/**
- * @brief Create a queue object
- *
- * @return Queue*
- */
-Queue *create_queue() {
-  Queue *queue = (Queue *)malloc(sizeof(Queue));
-  if (queue == NULL) {
-    fprintf(stderr, "Memory allocation failed\n");
-    exit(EXIT_FAILURE);
-  }
-  queue->length = 0;
-  queue->front = NULL;
-  queue->rear = NULL;
-  return queue;
-}
-
-/**
- * @brief 入队
- *
- * @param queue
- * @param node
- */
-void enqueue(Queue *queue, Node *node) {
-  if (is_empty_queue(queue)) {
-    fprintf(stderr, "Queue is not initialized\n");
-    return;
-  }
-  QueueNode *newNode = (QueueNode *)malloc(sizeof(QueueNode));
-  if (newNode == NULL) {
-    fprintf(stderr, "Memory allocation failed\n");
-    exit(EXIT_FAILURE);
-  }
-  newNode->node = node;
-  newNode->next = NULL;
-  if (queue->length == 0) {
-    queue->front = newNode;
-    queue->rear = newNode;
-  } else {
-    queue->rear->next = newNode;
-    queue->rear = newNode;
-  }
-  queue->length++;
-}
-
-/**
- * @brief 队列判空
- *
- * @param queue
- * @return true
- * @return false
- */
-bool is_empty_queue(Queue *queue) {
-  return queue == NULL || queue->length == 0;
-}
-
-/**
- * @brief 出队
- *
- * @param queue 队列
- * @return Node* 出队结点指针
- */
-Node *dequeue(Queue *queue) {
-  if (is_empty_queue(queue)) {
-    fprintf(stderr, "Queue is empty or not initialized\n");
-    return NULL;
-  }
-  Node *node = queue->front->node;
-  queue->front = queue->front->next;
-  if (queue->front == NULL) {
-    queue->rear = NULL;
-  }
-  queue->length--;
+ThreadedTreeNode *createThreadedTreeNode(NodeValue value) {
+  ThreadedTreeNode *node = (ThreadedTreeNode *)malloc(sizeof(ThreadedTreeNode));
+  node->value = value;
+  node->left = NULL;
+  node->right = NULL;
+  node->isLeftThreaded = false;
+  node->isRightThreaded = false;
   return node;
 }
 
 /**
- * @brief 取队头结点
+ * @brief Create a Threaded Tree object from an array of values.
  *
- * @param queue
- * @return Node*
+ * @param values values inputed.
+ * @param size values size.
+ * @return ThreadedTreeNode*
  */
-Node *peek_front(Queue *queue) {
-  if (is_empty_queue(queue)) {
-    fprintf(stderr, "Queue is empty or not initialized\n");
+ThreadedTreeNode *createThreadedTree(NodeValue *values, int size) {
+  if (values == NULL || size == 0) {
     return NULL;
   }
-  return queue->front->node;
+  ThreadedTreeNode *root = createThreadedTreeNode(values[0]);
+  for (int i = 1; i < size; ++i) {
+    ThreadedTreeNode *node = createThreadedTreeNode(values[i]);
+    threaded_insert(&root, node);
+  }
+  return root;
 }
 
 /**
- * @brief 释放队列内存
+ * @brief left rotate a Threaded Tree.
  *
- * @param queue
+ * @param root root of the Threaded Binary Tree.
  */
-void free_queue(Queue *queue) {
-  if (queue == NULL) {
+void threaded_left_rotate(ThreadedTreeNode **root) {
+  ThreadedTreeNode *x = *root;
+  ThreadedTreeNode *y = x->right;
+  x->right = y->left;
+  if (y->left != NULL) {
+    y->left->isLeftThreaded = false;
+  }
+  y->left = x;
+  y->isLeftThreaded = x->isLeftThreaded;
+  x->isLeftThreaded = true;
+  *root = y;
+}
+
+/**
+ * @brief right rotate a Threaded Tree.
+ *
+ * @param root same as above.
+ */
+void threaded_right_rotate(ThreadedTreeNode **root) {
+  ThreadedTreeNode *x = *root;
+  ThreadedTreeNode *y = x->left;
+  x->left = y->right;
+  if (y->right != NULL) {
+    y->right->isRightThreaded = false;
+  }
+  y->right = x;
+  y->isRightThreaded = x->isRightThreaded;
+  x->isRightThreaded = true;
+  *root = y;
+}
+
+/**
+ * @brief insert a new node into the threaded binary tree.
+ *
+ * @param root root of the Threaded Tree.
+ * @param node target node to be inserted.
+ */
+void threaded_insert(ThreadedTreeNode **root, ThreadedTreeNode *node) {
+  ThreadedTreeNode *y = NULL;
+  ThreadedTreeNode *x = *root;
+  while (x != NULL) {
+    y = x;
+    if (node->value < x->value) {
+      x = x->left;
+    } else {
+      x = x->right;
+    }
+  }
+  node->left = NULL;
+  node->right = NULL;
+  node->isLeftThreaded = true;
+  node->isRightThreaded = true;
+  if (y == NULL) {
+    *root = node;
+  } else if (node->value < y->value) {
+    y->left = node;
+    y->isLeftThreaded = false;
+  } else {
+    y->right = node;
+    y->isRightThreaded = false;
+  }
+}
+
+/**
+ * @brief Delete a node from a Threaded Tree.
+ *
+ * @param root root of the Threaded Tree.
+ * @param node target node to be deleted.
+ */
+void threaded_delete(ThreadedTreeNode **root, ThreadedTreeNode *node) {
+  ThreadedTreeNode *y = NULL;
+  ThreadedTreeNode *x = *root;
+  ThreadedTreeNode *z = NULL;
+  while (x != node) {
+    y = x;
+    if (node->value < x->value) {
+      x = x->left;
+    } else {
+      x = x->right;
+    }
+  }
+  if (x->left == NULL || x->right == NULL) {
+    z = x;
+  } else {
+    y = x;
+    x = x->right;
+    while (x->left != NULL) {
+      y = x;
+      x = x->left;
+    }
+    z = x;
+  }
+  if (z->left != NULL) {
+    z->left->isLeftThreaded = false;
+  }
+  if (z->right != NULL) {
+    z->right->isRightThreaded = false;
+  }
+  if (y == NULL) {
+    *root = z->right;
+  } else if (z == y->left) {
+    y->left = z->right;
+    y->isLeftThreaded = false;
+  } else {
+    y->right = z->right;
+    y->isRightThreaded = false;
+  }
+  if (z != node) {
+    node->value = z->value;
+  }
+  free(z);
+}
+
+/**
+ * @brief Inorder traversal of a Threaded Tree.
+ *
+ * @param root
+ */
+void inorder_threaded_traversal(ThreadedTreeNode *root) {
+  if (root == NULL) {
     return;
   }
-  QueueNode *current = queue->front;
-  while (current != NULL) {
-    QueueNode *temp = current;
-    current = current->next;
-    free(temp);
+  if (root->left != NULL) {
+    inorder_threaded_traversal(root->left);
   }
-  free(queue);
+  printf("%c", root->value);
+  if (root->right != NULL) {
+    inorder_threaded_traversal(root->right);
+  }
 }
+
+/**
+ * @brief preorder traversal of a Threaded Tree.
+ *
+ * @param root
+ */
+void preorder_threaded_traversal(ThreadedTreeNode *root) {
+  if (root == NULL) {
+    return;
+  }
+  printf("%c", root->value);
+  if (root->left != NULL) {
+    preorder_threaded_traversal(root->left);
+  }
+  if (root->right != NULL) {
+    preorder_threaded_traversal(root->right);
+  }
+}
+
+/**
+ * @brief postorder traversal of a Threaded Tree.
+ *
+ * @param root
+ */
+void postorder_threaded_traversal(ThreadedTreeNode *root) {
+  if (root == NULL) {
+    return;
+  }
+  if (root->left != NULL) {
+    postorder_threaded_traversal(root->left);
+  }
+  if (root->right != NULL) {
+    postorder_threaded_traversal(root->right);
+  }
+  printf("%c", root->value);
+}
+
+// ***********二叉搜索树************
+
+// ***********二叉平衡树************
+
+// ***********红黑树****************
