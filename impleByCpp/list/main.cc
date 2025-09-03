@@ -1,5 +1,5 @@
 #include "utils.h"
-#include <iostream>
+
 
 int main() {
   ListNode &node = create_node(10);
@@ -7,6 +7,7 @@ int main() {
   std::vector<NodeVal> vals{21, 53, 14, 85, 91, 14};
   LinkList &list = create_list_with_tailinsert(vals);
   print_list(list);
+  std::cout << get_mid_node(list).data << std::endl;
   reverse_list(list);
   print_list(list);
   std::vector<int> &result = search_node(list, 14);
@@ -20,12 +21,19 @@ int main() {
   } else {
     print_list(list);
   }
+  std::cout << "mid node data: " << get_mid_node(list).data << std::endl;
   delete_list(list);
 
   return 0;
 }
 
-void insert_on_tail(LinkList &list, const NodeVal &val) {
+/**
+ * @brief Create a node object with the given value.
+ *
+ * @param val
+ * @return ListNode&
+ */
+ListNode &create_node(const NodeVal &val) {
   ListNode *node = (ListNode *)malloc(sizeof(ListNode));
   if (node == nullptr) {
     std::cout << "memory allocation failure\n";
@@ -33,12 +41,17 @@ void insert_on_tail(LinkList &list, const NodeVal &val) {
   }
   node->data = val;
   node->next = nullptr;
+  return *node;
+}
+
+void insert_on_tail(LinkList &list, const NodeVal &val) {
+  ListNode &node= create_node(val);
   if (list.head == nullptr) {
-    list.head = node;
-    list.tail = node;
+    list.head = &node;
+    list.tail = &node;
   } else {
-    list.tail->next = node;
-    list.tail = node;
+    list.tail->next = &node;
+    list.tail = &node;
   }
 }
 
@@ -88,17 +101,14 @@ void print_list(const LinkList &list) {
   std::cout << std::endl;
 }
 
-ListNode &create_node(const NodeVal &val) {
-  ListNode *node = (ListNode *)malloc(sizeof(ListNode));
-  if (node == nullptr) {
-    std::cout << "memory allocation failure\n";
-    std::exit(EXIT_FAILURE);
-  }
-  node->data = val;
-  node->next = nullptr;
-  return *node;
-}
 
+
+/**
+ * @brief Create a list with tailinsert method.
+ * 
+ * @param vals values to be inserted.
+ * @return LinkList& 
+ */
 LinkList &create_list_with_tailinsert(const std::vector<NodeVal> &vals) {
   LinkList *list = (LinkList *)malloc(sizeof(LinkList));
   if (list == nullptr) {
@@ -113,6 +123,12 @@ LinkList &create_list_with_tailinsert(const std::vector<NodeVal> &vals) {
   return *list;
 }
 
+/**
+ * @brief Create a list with headinsert method.
+ * 
+ * @param vals values to be inserted.
+ * @return LinkList& 
+ */
 LinkList &create_list_with_headinsert(const std::vector<NodeVal> &vals) {
   LinkList *list = (LinkList *)malloc(sizeof(LinkList));
   if (list == nullptr) {
@@ -127,6 +143,12 @@ LinkList &create_list_with_headinsert(const std::vector<NodeVal> &vals) {
   return *list;
 }
 
+/**
+ * @brief Delete the node with the given value from the linked list.
+ * 
+ * @param list 
+ * @param val 
+ */
 void delete_node(LinkList &list, const NodeVal &val) {
   ListNode *prev = nullptr;
   ListNode *curr = list.head;
@@ -150,13 +172,34 @@ void delete_node(LinkList &list, const NodeVal &val) {
   }
 }
 
+/**
+ * @brief Delete the entire linked list.
+ * 
+ * @param list 
+ */
 void delete_list(LinkList &list) {
   ListNode *node = list.head;
   while (node != nullptr) {
     ListNode *next = node->next;
-    free(node);
+    delete node;
     node = next;
   }
   list.head = nullptr;
   list.tail = nullptr;
+}
+
+/**
+ * @brief Get the mid node object of the given linked list.
+ * 
+ * @param list 
+ * @return ListNode& 
+ */
+ListNode &get_mid_node(const LinkList &list) {
+  ListNode *slow = list.head;
+  ListNode *fast = list.head;
+  while (fast != nullptr && fast->next != nullptr) {
+    slow = slow->next;
+    fast = fast->next->next;
+  }
+  return *slow;
 }

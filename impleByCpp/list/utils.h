@@ -1,6 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
-
+#include <iostream>
 #include <vector>
 typedef int NodeVal;
 typedef struct ListNode {
@@ -21,6 +21,7 @@ void delete_node(LinkList &list, const NodeVal &val);
 void delete_list(LinkList &list);
 std::vector<int> &search_node(const LinkList &list, const NodeVal &val);
 ListNode &create_node(const NodeVal &val);
+ListNode &get_mid_node(const LinkList &list);
 LinkList &create_list_with_headinsert(const std::vector<NodeVal> &vals);
 LinkList &create_list_with_tailinsert(const std::vector<NodeVal> &vals);
 
