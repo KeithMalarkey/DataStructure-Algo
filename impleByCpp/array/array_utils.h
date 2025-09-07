@@ -2,9 +2,9 @@
 #define ARRAY_UTILS_H
 // 主要引入数组实现的线性表
 
-#include <algorithm>
-#include <iostream>
-#include <memory>
+// #include <algorithm>
+// #include <iostream>
+// #include <memory>
 #include <vector>
 
 void printList(const std::vector<int> &list);

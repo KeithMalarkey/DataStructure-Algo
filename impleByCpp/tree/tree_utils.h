@@ -1,6 +1,7 @@
 #ifndef TREE_UTILS_H
 #define TREE_UTILS_H
 
+#include <iostream>
 #include <vector>
 
 const int NULL_NODE = -(1 << 10);
@@ -16,6 +17,7 @@ typedef struct TreeNode {
       delete left;
     if (right)
       delete right;
+    std::cout << "delete node " << val << std::endl;
   }
 } BTreeNode;
 
