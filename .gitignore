@@ -1,1 +1,8 @@
 .vscode/
+.git*/
+ImpleByC/.vscode/
+ImpleByC/build/
+ImpleByCpp/.cache/
+ImpleByCpp/.vscode/
+ImpleByCpp/build/
+ImpleByJava/.vscode/

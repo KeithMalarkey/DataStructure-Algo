@@ -1,0 +1,6 @@
+ArrayTests 10 0.000666779
+GraphTests 11 0.000415435
+ListTests 10 0.0003287
+SearchTests 0 0
+TreeTests 0 0
+---

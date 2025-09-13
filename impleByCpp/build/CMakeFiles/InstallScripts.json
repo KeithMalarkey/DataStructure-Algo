@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/keith/workspace/Algorithm/impleByCpp/build/cmake_install.cmake",
+		"/home/keith/workspace/Algorithm/impleByCpp/build/tests/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

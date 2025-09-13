@@ -14,7 +14,7 @@
 
 # structure
 
-<!-- todo: 增加更多内容 -->
+<!-- todo: 增加/修改更多内容 -->
 ```mermaid
 graph LR
 A[Data Structures] --> B[Array]
@@ -51,8 +51,9 @@ F --> Z[Adjacency Matrix]
 # environment
 
 + system: Arch Linux x86_64
-+ compiler: g++/gcc 15.2.1, openjdk-24
-+ cmake 4.1.1
++ compiler: g++/gcc 15.2.1 or clang(cpp::std=c++23), openjdk-24
++ Build:cmake 4.1.1/make 4.4.1
++ UnitTest: google test framework
++ IDE/PDE: vscode/lazyvim(neovim)
 
 # details
-;) Stack和Queue的实现可以使用线性数组和链表,考虑到链表的易扩展性,故在本文中使用链表实现Stack和Queue.

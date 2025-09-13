@@ -1,0 +1,133 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "4.1.1"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				},
+				{
+					"build" : "tests",
+					"jsonFile" : "directory-tests-Debug-b01f6abb0ab61427ef3b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "4.1.1"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "tests",
+					"targetIndexes" : 
+					[
+						2,
+						3,
+						4,
+						5,
+						6
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "DS&Algo-impleByCpp",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "lib::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lib-Debug-3fab9f6131daca3193cb.json",
+					"name" : "lib",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "main::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-main-Debug-b83ba68a6456d1149692.json",
+					"name" : "main",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "test_array::@a44f0ac069e85531cdee",
+					"jsonFile" : "target-test_array-Debug-1ecb4dfd9679f2b41380.json",
+					"name" : "test_array",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "test_graph::@a44f0ac069e85531cdee",
+					"jsonFile" : "target-test_graph-Debug-538c5e12774ef2d464d0.json",
+					"name" : "test_graph",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "test_list::@a44f0ac069e85531cdee",
+					"jsonFile" : "target-test_list-Debug-9d91be0af4b4bf42893e.json",
+					"name" : "test_list",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "test_search::@a44f0ac069e85531cdee",
+					"jsonFile" : "target-test_search-Debug-03658578e6c7ed878681.json",
+					"name" : "test_search",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "test_tree::@a44f0ac069e85531cdee",
+					"jsonFile" : "target-test_tree-Debug-87e7b65f7f7c8c874a6e.json",
+					"name" : "test_tree",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/keith/workspace/Algorithm/impleByCpp/build",
+		"source" : "/home/keith/workspace/Algorithm/impleByCpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 8
+	}
+}

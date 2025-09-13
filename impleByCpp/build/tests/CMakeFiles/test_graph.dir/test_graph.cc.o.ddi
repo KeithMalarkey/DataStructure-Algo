@@ -1,0 +1,9 @@
+{
+  "revision": 0,
+  "rules": [
+    {
+      "primary-output": "tests/CMakeFiles/test_graph.dir/test_graph.cc.o"
+    }
+  ],
+  "version": 1
+}

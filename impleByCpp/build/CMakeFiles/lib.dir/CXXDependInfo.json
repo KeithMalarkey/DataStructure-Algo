@@ -1,0 +1,55 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "Clang",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/home/keith/workspace/Algorithm/impleByCpp/build",
+	"dir-cur-src" : "/home/keith/workspace/Algorithm/impleByCpp",
+	"dir-top-bld" : "/home/keith/workspace/Algorithm/impleByCpp/build",
+	"dir-top-src" : "/home/keith/workspace/Algorithm/impleByCpp",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/home/keith/workspace/Algorithm/impleByCpp/include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/keith/workspace/Algorithm/impleByCpp/build/CMakeFiles/lib.dir",
+	"sources" : 
+	{
+		"CMakeFiles/lib.dir/src/array/arrayImple.cc.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/keith/workspace/Algorithm/impleByCpp/src/array/arrayImple.cc"
+		},
+		"CMakeFiles/lib.dir/src/graph/graphImple.cc.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/keith/workspace/Algorithm/impleByCpp/src/graph/graphImple.cc"
+		},
+		"CMakeFiles/lib.dir/src/list/listImple.cc.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/keith/workspace/Algorithm/impleByCpp/src/list/listImple.cc"
+		},
+		"CMakeFiles/lib.dir/src/others/unionset.cc.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/keith/workspace/Algorithm/impleByCpp/src/others/unionset.cc"
+		},
+		"CMakeFiles/lib.dir/src/search/searchImple.cc.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/keith/workspace/Algorithm/impleByCpp/src/search/searchImple.cc"
+		},
+		"CMakeFiles/lib.dir/src/tree/treeImple.cc.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/keith/workspace/Algorithm/impleByCpp/src/tree/treeImple.cc"
+		}
+	}
+}

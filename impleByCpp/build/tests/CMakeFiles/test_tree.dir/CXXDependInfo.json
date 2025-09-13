@@ -1,0 +1,30 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "Clang",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/home/keith/workspace/Algorithm/impleByCpp/build/tests",
+	"dir-cur-src" : "/home/keith/workspace/Algorithm/impleByCpp/tests",
+	"dir-top-bld" : "/home/keith/workspace/Algorithm/impleByCpp/build",
+	"dir-top-src" : "/home/keith/workspace/Algorithm/impleByCpp",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/home/keith/workspace/Algorithm/impleByCpp/include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/keith/workspace/Algorithm/impleByCpp/build/tests/CMakeFiles/test_tree.dir",
+	"sources" : 
+	{
+		"tests/CMakeFiles/test_tree.dir/test_tree.cc.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/keith/workspace/Algorithm/impleByCpp/tests/test_tree.cc"
+		}
+	}
+}

@@ -1,0 +1,9 @@
+{
+  "revision": 0,
+  "rules": [
+    {
+      "primary-output": "tests/CMakeFiles/test_list.dir/test_list.cc.o"
+    }
+  ],
+  "version": 1
+}

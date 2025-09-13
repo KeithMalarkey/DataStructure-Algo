@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 4.1.1)
-project(impleByCpp)
+project(DS&Algo-impleByCpp)
+set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_CXX_STANDARD 23)
+add_library(lib src/array/arrayImple.cc src/graph/graphImple.cc src/list/listImple.cc src/others/unionset.cc src/search/searchImple.cc src/tree/treeImple.cc)
+target_include_directories(lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-set(CMAKE_CXX_STANDARD 14)
+add_executable(main src/main.cc)
+target_link_libraries(main lib)
 
-include_directories(array)
-include_directories(list)
-
-add_executable(impleByCpp
-        array/array_utils.h
-        array/main.cc
-        list/main.cc
-        list/utils.h)
+enable_testing()
+add_subdirectory(tests)

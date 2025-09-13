@@ -1,0 +1,178 @@
+Start testing: Sep 12 11:38 CST
+----------------------------------------------------------
+1/5 Testing: ArrayTests
+1/5 Test: ArrayTests
+Command: "/home/keith/workspace/Algorithm/impleByCpp/build/tests/test_array"
+Directory: /home/keith/workspace/Algorithm/impleByCpp/build/tests
+"ArrayTests" start time: Sep 12 11:38 CST
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+[==========] Running 10 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 10 tests from ArrayTest
+[ RUN      ] ArrayTest.bubble_sort
+bubble_sort result: 1 2 3 4 5 6 7 8 9 
+[       OK ] ArrayTest.bubble_sort (0 ms)
+[ RUN      ] ArrayTest.quick_sort
+1 2 3 4 5 6 7 8 9 
+[       OK ] ArrayTest.quick_sort (0 ms)
+[ RUN      ] ArrayTest.selection_sort
+selection_sort result: 1 2 3 4 5 6 7 8 9 
+[       OK ] ArrayTest.selection_sort (0 ms)
+[ RUN      ] ArrayTest.insertion_sort
+insertion_sort result:
+1 2 3 4 5 6 7 8 9 
+[       OK ] ArrayTest.insertion_sort (0 ms)
+[ RUN      ] ArrayTest.heap_sort
+1 2 3 4 5 6 7 8 9 
+[       OK ] ArrayTest.heap_sort (0 ms)
+[ RUN      ] ArrayTest.merge_sort
+1 2 3 4 5 6 7 8 9 
+[       OK ] ArrayTest.merge_sort (0 ms)
+[ RUN      ] ArrayTest.shell_sort
+shell_sort result:
+1 2 3 4 5 6 7 8 9 
+[       OK ] ArrayTest.shell_sort (0 ms)
+[ RUN      ] ArrayTest.count_sort
+1 2 3 4 5 6 7 8 9 
+[       OK ] ArrayTest.count_sort (0 ms)
+[ RUN      ] ArrayTest.opt_bubble_sort
+Optimized bubble_sort result:
+1 2 3 4 5 6 7 8 9 
+[       OK ] ArrayTest.opt_bubble_sort (0 ms)
+[ RUN      ] ArrayTest.radix_sort
+radix_sort result:
+1 2 3 4 5 6 7 8 9 
+[       OK ] ArrayTest.radix_sort (0 ms)
+[----------] 10 tests from ArrayTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 10 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 10 tests.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"ArrayTests" end time: Sep 12 11:38 CST
+"ArrayTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/5 Testing: GraphTests
+2/5 Test: GraphTests
+Command: "/home/keith/workspace/Algorithm/impleByCpp/build/tests/test_graph"
+Directory: /home/keith/workspace/Algorithm/impleByCpp/build/tests
+"GraphTests" start time: Sep 12 11:38 CST
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GraphTest
+[ RUN      ] GraphTest.initGraphList
+----------------------------------------- Adjacency List ------------------------------------------
+***************** invalid list input *****************
+Invalid input.
+Graph info:
+	Vertices: 8
+	Edges: 14
+Adjacency List:
+
+ -> 
+
+ -> 
+
+ -> 
+
+ -> 
+
+ -> 
+
+ -> 
+
+ -> 
+
+ -> 
+***************** valid list input (Directed Graph #1) *****************
+Graph initialized successfully.
+Graph with 8 vertices and 14 edges:
+Graph info:
+	Vertices: 8
+	Edges: 14
+Adjacency List:
+A -> D(11) C(5) B(3) 
+B -> D(9) C(8) 
+C -> E(8) D(22) 
+D -> E(9) 
+E -> F(10) 
+F -> B(2) A(1) 
+G -> H(3) B(6) 
+H -> C(4) 
+Graph object implemented as a adjacency list is destroyed.
+[       OK ] GraphTest.initGraphList (0 ms)
+[----------] 1 test from GraphTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"GraphTests" end time: Sep 12 11:38 CST
+"GraphTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/5 Testing: ListTests
+3/5 Test: ListTests
+Command: "/home/keith/workspace/Algorithm/impleByCpp/build/tests/test_list"
+Directory: /home/keith/workspace/Algorithm/impleByCpp/build/tests
+"ListTests" start time: Sep 12 11:38 CST
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+This test program does NOT link in any test case. Please make sure this is intended.
+[==========] Running 0 tests from 0 test suites.
+[==========] 0 tests from 0 test suites ran. (0 ms total)
+[  PASSED  ] 0 tests.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"ListTests" end time: Sep 12 11:38 CST
+"ListTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+Unable to find executable: /home/keith/workspace/Algorithm/impleByCpp/build/tests/test_search
+4/5 Testing: SearchTests
+4/5 Test: SearchTests
+Command: ""
+Directory: /home/keith/workspace/Algorithm/impleByCpp/build/tests
+"SearchTests" start time: 
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SearchTests" end time: Sep 12 11:38 CST
+"SearchTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+Unable to find executable: /home/keith/workspace/Algorithm/impleByCpp/build/tests/test_tree
+5/5 Testing: TreeTests
+5/5 Test: TreeTests
+Command: ""
+Directory: /home/keith/workspace/Algorithm/impleByCpp/build/tests
+"TreeTests" start time: 
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"TreeTests" end time: Sep 12 11:38 CST
+"TreeTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 12 11:38 CST
