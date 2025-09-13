@@ -1,9 +1,0 @@
-{
-  "revision": 0,
-  "rules": [
-    {
-      "primary-output": "CMakeFiles/lib.dir/src/list/listImple.cc.o"
-    }
-  ],
-  "version": 1
-}

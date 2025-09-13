@@ -1,3 +1,0 @@
-ninja_dyndep_version = 1.0
-build tests/CMakeFiles/test_array.dir/test_array.cc.o: dyndep
-

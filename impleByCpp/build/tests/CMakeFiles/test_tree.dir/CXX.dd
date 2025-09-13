@@ -1,3 +1,0 @@
-ninja_dyndep_version = 1.0
-build tests/CMakeFiles/test_tree.dir/test_tree.cc.o: dyndep
-

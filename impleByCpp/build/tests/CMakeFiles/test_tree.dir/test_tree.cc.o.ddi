@@ -1,9 +1,0 @@
-{
-  "revision": 0,
-  "rules": [
-    {
-      "primary-output": "tests/CMakeFiles/test_tree.dir/test_tree.cc.o"
-    }
-  ],
-  "version": 1
-}

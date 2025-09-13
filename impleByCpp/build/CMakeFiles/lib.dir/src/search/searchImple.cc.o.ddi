@@ -1,9 +1,0 @@
-{
-  "revision": 0,
-  "rules": [
-    {
-      "primary-output": "CMakeFiles/lib.dir/src/search/searchImple.cc.o"
-    }
-  ],
-  "version": 1
-}
