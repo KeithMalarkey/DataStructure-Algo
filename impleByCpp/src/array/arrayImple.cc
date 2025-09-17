@@ -9,6 +9,7 @@
 // *原地排序
 // *循环不变式
 // *分治->递归(先/后递归)
+namespace ArrayUtils {
 
 /**
  * @brief 基数排序
@@ -340,3 +341,4 @@ void printList(const std::vector<int> &list) {
   std::for_each(list.begin(), list.end(), [](int x) { std::cout << x << " "; });
   std::cout << "\n";
 }
+} // namespace ArrayUtils

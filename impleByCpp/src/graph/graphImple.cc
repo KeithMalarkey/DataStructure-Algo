@@ -10,130 +10,8 @@
 
 // * 邻接表可以表示无向图和有向图,但由于无向图的邻接表表示占用较大的内存空间,因此在此仅使用邻接矩阵表示无向图
 // * 同时,给出了有向图和无向图的邻接矩阵表示
-
-// int main() {
-//   // ---------------- Adjacency List -----------------
-//   std::cout << "----------------------------------------- Adjacency List "
-//                "------------------------------------------\n";
-//   std::cout << "***************** invalid list input *****************\n";
-//   Graph graph(8, 14); // create a graph with 8 vertices and 10 edges
-//   std::vector<VertexType> vertexList{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
-
-//   // invalid input
-//   std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList = {
-//       {{'A', 'B'}, 1}, {{'A', 'C'}, 2},  {{'A', 'D'}, 3},  {{'B', 'C'}, 4},
-//       {{'B', 'D'}, 5}, {{'B', 'E'}, 6},  {{'C', 'D'}, 7},  {{'C', 'E'}, 8},
-//       {{'D', 'E'}, 9}, {{'E', 'F'}, 10}, {{'E', 'G'}, 11}, {{'F', 'G'}, 12},
-//       {{'G', 'H'}, 13}};
-//   graph.initGraph(vertexList, edgeList);
-//   graph.printGraph(); // print empty graph with "#"
-
-//   std::cout << "***************** valid list input (Directed Graph #1) "
-//                "*****************\n";
-//   std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList2 = {
-//       {{'A', 'B'}, 3}, {{'A', 'C'}, 5},  {{'A', 'D'}, 11}, {{'B', 'C'}, 8},
-//       {{'B', 'D'}, 9}, {{'F', 'A'}, 1},  {{'C', 'D'}, 22}, {{'C', 'E'}, 8},
-//       {{'D', 'E'}, 9}, {{'E', 'F'}, 10}, {{'F', 'B'}, 2},  {{'G', 'H'}, 3},
-//       {{'G', 'B'}, 6}, {{'H', 'C'}, 4}};
-//   graph.initGraph(vertexList, edgeList2);
-//   std::cout << "Graph with " << vertexList.size() << " vertices and "
-//             << edgeList2.size() << " edges:" << std::endl;
-//   graph.printGraph();
-
-//   std::cout << "Indegree of vertex B: " << graph.indegree('B') << std::endl;
-//   std::cout << "Outdegree of vertex B: " << graph.outdegree('B') <<
-//   std::endl; std::cout << "Weight of edge (B, C): " <<
-//   graph.getEdgeWeight('B', 'C')
-//             << std::endl;
-//   std::cout << "Is vertex G in the graph? " << graph.isVertex('G') <<
-//   std::endl; std::cout << "Is edge (B, C) in the graph? " <<
-//   graph.isEdge('B', 'C')
-//             << std::endl;
-//   std::cout << "Is edge (C, F) in the graph? " << graph.isEdge('C', 'F')
-//             << std::endl;
-//   graph.is_cyclic();
-//   graph.printGraph();
-
-//   std::cout << "***************** valid list input (Directed Graph #2) "
-//                "************************\n";
-//   Graph graph2(6, 8);
-//   std::vector<VertexType> vertexList2{'A', 'B', 'C', 'D', 'E', 'F'};
-//   std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList3 = {
-//       {{'A', 'B'}, 1}, {{'A', 'C'}, 3}, {{'B', 'C'}, 4}, {{'B', 'D'}, 2},
-//       {{'C', 'D'}, 9}, {{'B', 'E'}, 5}, {{'C', 'F'}, 7}, {{'E', 'F'}, 8}};
-//   graph2.initGraph(vertexList2, edgeList3);
-//   graph2.DFS('A');
-//   graph2.DFS_recursive('A');
-//   graph2.BFS('A');
-//   graph2.printGraph();
-
-//   graph2.addVertex('I');
-//   graph2.addEdge('I', 'B', 2);
-//   graph2.addEdge('I', 'C', 3);
-//   graph2.deleteVertex('D');
-//   graph2.deleteEdge('B', 'C');
-//   std::cout << "After modifying the graph:" << std::endl;
-//   graph2.printGraph();
-
-//   std::cout << "******************* valid matrix input (Undirected Graph #3)
-//   "
-//                "*******************\n";
-//   Matrix matrix(false, false, 6, 8);
-//   std::vector<VertexType> vertexList3{'A', 'B', 'C', 'D', 'E', 'F'};
-//   std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList4 = {
-//       {{'A', 'B'}, 1}, {{'A', 'C'}, 3}, {{'A', 'D'}, 4}, {{'B', 'D'}, 2},
-//       {{'C', 'D'}, 9}, {{'B', 'E'}, 5}, {{'C', 'F'}, 7}, {{'E', 'F'}, 8}};
-//   matrix.initMatrix(vertexList3, edgeList4);
-//   std::cout << "Adjacency Matrix with " << vertexList3.size()
-//             << " vertices and " << edgeList4.size() << " edges:" <<
-//             std::endl;
-//   matrix.printMatrix();
-
-//   std::cout << "Indegree of vertex B: " << matrix.indegree('B') << std::endl;
-//   std::cout << "Outdegree of vertex B: " << matrix.outdegree('B') <<
-//   std::endl; std::cout << "Weight of edge (B, C): " <<
-//   matrix.getEdgeWeight('B', 'C')
-//             << std::endl;
-//   std::cout << "Is vertex G in the graph? " << matrix.isVertex('G')
-//             << std::endl;
-//   std::cout << "Is edge (B, D) in the graph? " << matrix.isEdge('B', 'D')
-//             << std::endl;
-//   std::cout << "Is edge (C, F) in the graph? " << matrix.isEdge('C', 'F')
-//             << std::endl;
-//   std::cout << "Deep-First-Search (DFS) started from vertex B: ";
-//   matrix.DFS('B');
-//   auto mstEdges_Kruskal = matrix.MinimumSpanningTreeKruskal();
-//   matrix.printMST(mstEdges_Kruskal);
-//   auto mstEdges_Prim = matrix.MinimumSpanningTreePrim();
-//   matrix.printMST(mstEdges_Prim);
-
-//   std::cout << "******************* valid matrix input (Directed Graph #4) "
-//                "*******************\n";
-//   Matrix matrix2(true, false, 6, 8);
-//   std::vector<VertexType> vertexList4{'A', 'B', 'C', 'D', 'E', 'F'};
-//   std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList5 = {
-//       {{'A', 'B'}, 1}, {{'A', 'C'}, 3}, {{'B', 'C'}, 4}, {{'B', 'D'}, 2},
-//       {{'C', 'D'}, 9}, {{'B', 'E'}, 5}, {{'C', 'F'}, 7}, {{'E', 'F'}, 8}};
-//   matrix2.initMatrix(vertexList4, edgeList5);
-//   std::cout << "Adjacency Matrix with " << vertexList4.size()
-//             << " vertices and " << edgeList5.size() << " edges:" <<
-//             std::endl;
-//   matrix2.printMatrix();
-
-//   std::cout << "Indegree of vertex B: " << matrix2.indegree('B') <<
-//   std::endl; std::cout << "Outdegree of vertex B: " << matrix2.outdegree('B')
-//   << std::endl; std::cout << "Weight of edge (B, C): " <<
-//   matrix2.getEdgeWeight('B', 'C')
-//             << std::endl;
-//   std::cout << "Is vertex A in the graph? " << matrix2.isVertex('A')
-//             << std::endl;
-//   std::cout << "Is edge (B, C) in the graph? " << matrix2.isEdge('B', 'C')
-//             << std::endl;
-//   std::cout << "Is edge (C, F) in the graph? " << matrix2.isEdge('C', 'F')
-//             << std::endl;
-
-//   return 0;
-// }
+using namespace common_graph_utils;
+using namespace directed_graph_utils;
 
 // --------------------- Graph Utils Implementation ------------------
 /**
@@ -190,43 +68,6 @@ bool Graph::isCyclicDFS(const VertexType &current) {
 
   return hasCycle;
 }
-
-void Graph::connectedComponent() {
-  visited.assign(_vertexList.size(), false);
-  std::vector<std::vector<VertexType>> components;
-  for (int i = 0; i < _vertexList.size(); i++) {
-    if (!visited[i]) {
-      std::vector<VertexType> component;
-      std::stack<VertexType> stack;
-      stack.push(_vertexList[i]._vertex);
-      while (!stack.empty()) {
-        VertexType vertex = stack.top();
-        stack.pop();
-        if (!visited[position(vertex)]) {
-          visited[position(vertex)] = true;
-          component.push_back(vertex);
-          AdjListNode *neighbor = _vertexList[position(vertex)]._firstEdge;
-          while (neighbor != nullptr) {
-            stack.push(neighbor->_vertex);
-            neighbor = neighbor->_next;
-          }
-        }
-      }
-      components.push_back(component);
-    }
-  }
-  // std::cout << "Connected components:" << std::endl;
-  // for (const auto &component : components) {
-  //   std::cout << "{";
-  //   for (const auto &vertex : component) {
-  //     std::cout << vertex << " ";
-  //   }
-  //   std::cout << "}" << std::endl;
-  // }
-  _connectedComponentNum = components.size();
-}
-
-int Graph::getConnectedComponentNum() const { return _connectedComponentNum; }
 
 /**
  * @brief Construct a new Adj List Node.
@@ -726,8 +567,7 @@ void Matrix::printMatrix() {
  * @param numOfEdges
  */
 Graph::Graph(unsigned int numOfVertices, unsigned int numOfEdges)
-    : _numOfVertices(numOfVertices), _numOfEdges(numOfEdges),
-      _connectedComponentNum(numOfVertices) {
+    : _numOfVertices(numOfVertices), _numOfEdges(numOfEdges) {
   _vertexList.resize(numOfVertices);
 }
 
@@ -770,7 +610,7 @@ bool Graph::initGraph(
   for (auto it = edgeList.begin(); it != edgeList.end(); it++) {
     initEdge(it->first.first, it->first.second, it->second);
   }
-  connectedComponent();
+  // TODO:计算强连通分量
   std::cout << "Graph initialized successfully." << std::endl;
   return true;
 }
@@ -1209,7 +1049,7 @@ void Graph::DFS_recursive_util(const VertexType &current,
   }
 
   visited[currentIdx] = true;
-  std::cout << current << " ";
+  // std::cout << current << " ";
 
   // 递归访问所有邻居
   AdjListNode *neighbor = _vertexList[currentIdx]._firstEdge;
@@ -1263,3 +1103,81 @@ bool Graph::BFS(const VertexType &startVertex) {
   std::cout << std::endl;
   return true;
 }
+
+void Graph::fillOrder(VertexType v, std::stack<VertexType> &stack) {
+  int vIdx = position(v);
+  if (vIdx == -1)
+    return;
+
+  visited[vIdx] = true;
+
+  AdjListNode *neighbor = _vertexList[vIdx]._firstEdge;
+  while (neighbor != nullptr) {
+    int neighborIdx = position(neighbor->_vertex);
+    if (neighborIdx != -1 && !visited[neighborIdx]) {
+      fillOrder(neighbor->_vertex, stack);
+    }
+    neighbor = neighbor->_next;
+  }
+
+  stack.push(v);
+}
+
+Graph Graph::transpose() const {
+  std::vector<VertexType> reverseList;
+  for (auto it : _vertexList) {
+    reverseList.push_back(it._vertex);
+  }
+  std::map<std::pair<VertexType, VertexType>, EdgeType> reverseEdgeList;
+  for (auto it = _edgeList.begin(); it != _edgeList.end(); ++it) {
+    reverseEdgeList[std::make_pair(it->first.second, it->first.first)] =
+        it->second;
+  }
+  Graph transposeGraph(_numOfVertices, _numOfEdges);
+  transposeGraph.initGraph(reverseList, reverseEdgeList);
+  return transposeGraph;
+}
+
+/**
+ * @brief 强连通分量(Kosaraju算法)
+ *
+ * @return std::vector<std::vector<VertexType>>
+ */
+std::vector<std::vector<VertexType>>
+Graph::Kosaraju_StronglyConnectedComponents() {
+  visited.assign(_numOfVertices, false);
+  std::stack<VertexType> stack;
+  std::vector<std::vector<VertexType>> scc;
+  // 1. DFS填充
+  for (int i = 0; i < _numOfVertices; i++) {
+    if (!visited[i]) {
+      fillOrder(_vertexList[i]._vertex, stack);
+    }
+  }
+
+  // 2.转制图
+  Graph transposeGraph = transpose();
+
+  // 3. 重置访问数组
+  visited.assign(_numOfVertices, false);
+
+  // 4. DFS遍历转制图
+  while (!stack.empty()) {
+    VertexType current = stack.top();
+    stack.pop();
+    int currentIdx = position(current);
+    if (currentIdx == -1 && !visited[currentIdx]) {
+      std::vector<VertexType> sccComponent;
+      transposeGraph.DFS_recursive_util(current, visited);
+      scc.push_back(sccComponent);
+    }
+  }
+  return scc;
+}
+
+int Graph::getConnectedComponentNum() {
+  return Kosaraju_StronglyConnectedComponents().size();
+}
+
+// TODO
+// int shortestPath(const VertexType &src, const VertexType &dest) {}

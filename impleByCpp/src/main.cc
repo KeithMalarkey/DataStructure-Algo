@@ -1,8 +1,10 @@
 #include "core_api/array_utils.h"
 #include "core_api/graph_utils.h"
-#include "core_api/list_utils.h"
-#include "core_api/search_utils.h"
-#include "core_api/tree_utils.h"
+/* 下面三个看看gtest测试吧,不想写了 */
+// #include "core_api/list_utils.h"
+// #include "core_api/search_utils.h"
+// #include "core_api/tree_utils.h"
+#include <iostream>
 
 int main() {
   // ---------------------------------------array list
@@ -23,17 +25,17 @@ int main() {
   // insertion_sort(sortList);
   // merge_sort(sortList, 0, sortList.size() - 1);
   // shell_sort(sortList);
-  count_sort(list, *std::min_element(list.begin(), list.end()),
-             *std::max_element(list.begin(), list.end()));
+  ArrayUtils::count_sort(list, *std::min_element(list.begin(), list.end()),
+                         *std::max_element(list.begin(), list.end()));
   // opt_bubble_sort(sortList);
   // radix_sort(sortList);
-  printList(sortList);
+  ArrayUtils::printList(sortList);
 
   // -------------------------------------graph
   std::cout << "----------------------------------------- Adjacency List "
                "------------------------------------------\n";
   std::cout << "***************** invalid list input *****************\n";
-  Graph graph(8, 14); // create a graph with 8 vertices and 10 edges
+  directed_graph_utils::Graph graph(8, 14); // create a graph with 8 vertices and 10 edges
   std::vector<VertexType> vertexList{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 
   // invalid input
@@ -59,7 +61,7 @@ int main() {
 
   std::cout << "***************** valid list input (Directed Graph #2) "
                "************************\n";
-  Graph graph2(6, 8);
+  directed_graph_utils::Graph graph2(6, 8);
   std::vector<VertexType> vertexList2{'A', 'B', 'C', 'D', 'E', 'F'};
   std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList3 = {
       {{'A', 'B'}, 1}, {{'A', 'C'}, 3}, {{'B', 'C'}, 4}, {{'B', 'D'}, 2},
@@ -80,7 +82,7 @@ int main() {
 
   std::cout << "********************* valid matrix input (Undirected Graph #3) "
                "*********************\n";
-  Matrix matrix(false, false, 6, 8);
+  common_graph_utils::Matrix matrix(false, false, 6, 8);
   std::vector<VertexType> vertexList3{'A', 'B', 'C', 'D', 'E', 'F'};
   std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList4 = {
       {{'A', 'B'}, 1}, {{'A', 'C'}, 3}, {{'A', 'D'}, 4}, {{'B', 'D'}, 2},
@@ -110,7 +112,7 @@ int main() {
 
   std::cout << "******************* valid matrix input (Directed Graph #4)"
                "*******************\n";
-  Matrix matrix2(true, false, 6, 8);
+  common_graph_utils::Matrix matrix2(true, false, 6, 8);
   std::vector<VertexType> vertexList4{'A', 'B', 'C', 'D', 'E', 'F'};
   std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList5 = {
       {{'A', 'B'}, 1}, {{'A', 'C'}, 3}, {{'B', 'C'}, 4}, {{'B', 'D'}, 2},

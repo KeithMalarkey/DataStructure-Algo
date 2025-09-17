@@ -1,4 +1,4 @@
-#include <iostream>
+// #include <iostream>
 #include <vector>
 
 class UnionFind {
@@ -56,23 +56,3 @@ public:
     return roots;
   }
 };
-
-// int main() {
-//   UnionFind uf(10); // 10个元素
-
-//   std::cout << "初始连通分量: " << uf.getCount() << std::endl;
-
-//   // 合并操作
-//   uf.unionSet(0, 1);
-//   uf.unionSet(2, 3);
-//   uf.unionSet(4, 5);
-//   uf.unionSet(1, 2); // 连接两个集合
-
-//   std::cout << "合并后连通分量: " << uf.getCount() << std::endl;
-
-//   // 查询操作
-//   std::cout << "0和3是否连通: " << uf.isConnected(0, 3) << std::endl; // true
-//   std::cout << "0和4是否连通: " << uf.isConnected(0, 4) << std::endl; // false
-
-//   return 0;
-// }

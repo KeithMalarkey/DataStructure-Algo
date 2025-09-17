@@ -4,156 +4,7 @@
 #include <queue>
 #include <stack>
 
-/**
- * @input 3 1 8 4 7 5 2 6
- *        3
- *      /   \
- *    1      8
- *   / \     / \
- *  4   7   5   2
- * /
- *6
- *
- *        3
- *      /   \
- *    1      8
- *   / \     / \
- *  4   7   5   2
- * /    \
- *6     11
- *
- */
-
-// int main() {
-//   std::vector<NodeVal> vals{3, 1, 8, 4, 7, 5, 2, 6};
-//   std::vector<NodeVal> _vals{3, 1, 8, 4, 7, 5, 2, 6, NULL_NODE, NULL_NODE, 11};
-//   BTreeNode *root = create_tree(_vals);
-//   BTreeNode *_root = create_tree(vals);
-//   std::cout << "Preorder Traversal: ";
-//   preorderTraversal(root);
-//   std::cout << std::endl;
-//   std::cout << "Inorder Traversal: ";
-//   inorderTraversal(root);
-//   std::cout << std::endl;
-//   std::cout << "Postorder Traversal: ";
-//   postorderTraversal(root);
-//   std::cout << std::endl;
-//   std::cout << "Levelorder Traversal: ";
-//   levelorderTraversal(root);
-//   std::cout << std::endl;
-//   std::cout << "No recursion Preorder Traversal: ";
-//   norecursion_preorderTraversal(root);
-//   std::cout << std::endl;
-//   std::cout << "No recursion Inorder Traversal: ";
-//   norecursion_inorderTraversal(root);
-//   std::cout << std::endl;
-//   std::cout << "No recursion Postorder Traversal: ";
-//   norecursion_postorderTraversal(root);
-//   std::cout << std::endl;
-
-//   std::cout << "Height: " << height(root) << std::endl;
-//   std::cout << "Is balanced: " << is_balanced(root) << std::endl;
-//   std::cout << "Is valid BST: " << is_valid_bst(root) << std::endl;
-//   BTreeNode *parent = getParent(root, 7);
-//   std::cout << "Parent of 7: " << parent->val << std::endl;
-
-//   std::cout << "Node size: " << node_size(root) << std::endl;
-//   std::cout << "Leaf size: " << leaf_size(root) << std::endl;
-//   std::cout << "Max depth: " << max_depth(root) << std::endl;
-//   std::cout << "Min depth: " << min_depth(root) << std::endl;
-//   std::cout << "Width: " << width(root) << std::endl;
-
-//   BTreeNode *left = create_tree_node(6);
-//   BTreeNode *right = create_tree_node(11);
-//   BTreeNode *root2 = create_tree_node(3);
-//   root2->left = left;
-//   root2->right = right;
-//   std::cout << "Is mirror: " << is_mirror(root, root2) << std::endl;
-//   std::cout << "Is symmetric: " << is_symmetric(root) << std::endl;
-//   std::cout << "Level of 6: " << level(root, 6) << std::endl;
-
-//   // note: if u create new nodes, may they don't have common ancestor.
-//   // u have to search and catch the ptr of target nodes for searching LCA.
-//   BTreeNode *lca = lowestCommonAncestor(root, left, right);
-//   BTreeNode *lca2 =
-//       lowestCommonAncestor(root, search(root, 6), search(root, 11));
-//   if (lca) {
-//     std::cout << "Fake!Lowest common ancestor of 6 and 11: " << lca->val
-//               << std::endl;
-//   } else {
-//     std::cout << "Fake! Lowest common ancestor of 6 and 11: NULL" << std::endl;
-//   }
-//   if (lca2) {
-//     std::cout << "Lowest common ancestor of 6 and 11: " << lca2->val
-//               << std::endl;
-//   } else {
-//     std::cout << "Lowest common ancestor of 6 and 11: NULL" << std::endl;
-//   }
-
-//   std::cout << "Is full: " << is_full(root) << std::endl;
-//   std::cout << "Is complete(_root): " << is_complete(_root) << std::endl;
-
-//   std::vector<BTreeNode *> leaves = collect_leaves(root);
-//   std::cout << "Leaves: ";
-//   for (auto leaf : leaves) {
-//     std::cout << leaf->val << " ";
-//   }
-//   std::cout << std::endl;
-
-//   BTreeNode *tn = twin_node(root, 5);
-//   if (tn) {
-//     std::cout << "Twin node of 5: " << tn->val << std::endl;
-//   } else {
-//     std::cout << "Twin node of 5: NULL" << std::endl;
-//   }
-
-//   std::vector<BTreeNode *> cousins = collect_cousins(root, 6);
-//   std::cout << "Cousins of 6: ";
-//   for (auto cousin : cousins) {
-//     std::cout << cousin->val << " ";
-//   }
-//   std::cout << std::endl;
-
-//   int target;
-//   std::cout << "Enter target node value: ";
-//   std::cin >> target;
-//   auto path = path_from_root_to_node(root, target);
-//   std::cout << "Path from root to " << target << ": ";
-//   for (auto node : path) {
-//     std::cout << node->val << " ";
-//   }
-//   std::cout << std::endl;
-
-//   auto path2 = path_from_node_to_root(root, target);
-//   std::cout << "Path from " << target << " to root: ";
-//   for (auto node : path2) {
-//     std::cout << node->val << " ";
-//   }
-//   std::cout << std::endl;
-
-//   //          41
-//   //         /   \
-//   //       29     36
-//   //      /  \     \
-//   //     92  35    26
-//   //         / \
-//   //        17 5
-//   std::vector<NodeVal> preorder{41, 29, 92, 35, 17, 5, 36, 26};
-//   std::vector<NodeVal> inorder{92, 29, 17, 35, 5, 41, 36, 26};
-//   std::vector<NodeVal> postorder{92, 17, 5, 35, 29, 26, 36, 41};
-//   BTreeNode *new_root = build_tree_from_preorder_inorder(preorder, inorder);
-//   std::cout << "Preorder Traversal of new tree: ";
-//   postorderTraversal(new_root);
-//   std::cout << std::endl;
-//   BTreeNode *new_root2 = build_tree_from_inorder_postorder(inorder, postorder);
-//   std::cout << "Inorder Traversal of new tree: ";
-//   preorderTraversal(new_root2);
-//   std::cout << std::endl;
-
-//   delete root;
-//   return 0;
-// }
-
+namespace binary_tree {
 /**
  * @brief Create a tree node.
  *
@@ -208,52 +59,63 @@ bool is_empty(BTreeNode *root) {
  * @brief pre order traversal of a binary tree.
  *
  * @param root
+ * @return true traversed successfully.
+ * @return false empty tree.
  */
-void preorderTraversal(BTreeNode *root) {
+bool preorderTraversal(BTreeNode *root) {
   if (is_empty(root)) {
-    return;
+    return false;
   }
   std::cout << root->val << " ";
   preorderTraversal(root->left);
   preorderTraversal(root->right);
+  return true;
 }
 
 /**
  * @brief inoreder traversal of a binary tree.
  *
  * @param root
+ * @return true
+ * @return false
  */
-void inorderTraversal(BTreeNode *root) {
+bool inorderTraversal(BTreeNode *root) {
   if (is_empty(root)) {
-    return;
+    return false;
   }
   inorderTraversal(root->left);
   std::cout << root->val << " ";
   inorderTraversal(root->right);
+  return true;
 }
 
 /**
  * @brief post order traversal of a binary tree.
  *
  * @param root
+ * @return true
+ * @return false
  */
-void postorderTraversal(BTreeNode *root) {
+bool postorderTraversal(BTreeNode *root) {
   if (is_empty(root)) {
-    return;
+    return false;
   }
   postorderTraversal(root->left);
   postorderTraversal(root->right);
   std::cout << root->val << " ";
+  return true;
 }
 
 /**
  * @brief Level order traversal of a binary tree.
  *
  * @param root
+ * @return true
+ * @return false
  */
-void levelorderTraversal(BTreeNode *root) {
+bool levelorderTraversal(BTreeNode *root) {
   if (is_empty(root)) {
-    return;
+    return false;
   }
   std::queue<BTreeNode *> q;
   q.push(root);
@@ -268,16 +130,19 @@ void levelorderTraversal(BTreeNode *root) {
       q.push(node->right);
     }
   }
+  return true;
 }
 
 /**
  * @brief pre order traversal of a binary tree without recursion.
  *
  * @param root
+ * @return true
+ * @return false
  */
-void norecursion_preorderTraversal(BTreeNode *root) {
+bool norecursion_preorderTraversal(BTreeNode *root) {
   if (is_empty(root)) {
-    return;
+    return false;
   }
   std::stack<BTreeNode *> s;
   s.push(root);
@@ -292,16 +157,19 @@ void norecursion_preorderTraversal(BTreeNode *root) {
       s.push(node->left);
     }
   }
+  return true;
 }
 
 /**
  * @brief inorder traversal of a binary tree without recursion.
  *
  * @param root
+ * @return true
+ * @return false
  */
-void norecursion_inorderTraversal(BTreeNode *root) {
+bool norecursion_inorderTraversal(BTreeNode *root) {
   if (is_empty(root)) {
-    return;
+    return false;
   }
   std::stack<BTreeNode *> s;
   BTreeNode *node = root;
@@ -316,16 +184,19 @@ void norecursion_inorderTraversal(BTreeNode *root) {
       node = node->right;
     }
   }
+  return true;
 }
 
 /**
  * @brief post order traversal of a binary tree without recursion.
  *
  * @param root
+ * @return true
+ * @return false
  */
-void norecursion_postorderTraversal(BTreeNode *root) {
+bool norecursion_postorderTraversal(BTreeNode *root) {
   if (is_empty(root)) {
-    return;
+    return false;
   }
   std::stack<BTreeNode *> s1, s2;
   s1.push(root);
@@ -344,6 +215,7 @@ void norecursion_postorderTraversal(BTreeNode *root) {
     std::cout << s2.top()->val << " ";
     s2.pop();
   }
+  return true;
 }
 
 /**
@@ -381,16 +253,19 @@ BTreeNode *getParent(BTreeNode *root, const NodeVal &val) {
   std::queue<BTreeNode *> q;
   q.push(root);
   while (!q.empty()) {
-    BTreeNode *tmp = q.front();
+    BTreeNode *current = q.front();
     q.pop();
-    if (tmp->left->val == val || tmp->right->val == val) {
-      return tmp;
+    if (current->left) {
+      if (current->left->val == val) {
+        return current;
+      }
+      q.push(current->left);
     }
-    if (tmp->left) {
-      q.push(tmp->left);
-    }
-    if (tmp->right) {
-      q.push(tmp->right);
+    if (current->right) {
+      if (current->right->val == val) {
+        return current;
+      }
+      q.push(current->right);
     }
   }
   return nullptr;
@@ -882,3 +757,185 @@ build_tree_from_inorder_postorder(const std::vector<NodeVal> &inorder,
       std::vector<NodeVal>(postorder.begin() + left_size, postorder.end() - 1));
   return root;
 }
+} // namespace binary_tree
+
+namespace red_black_tree {
+template <typename Key, typename Value>
+RedBlackTree<Key, Value>::RedBlackTree() {
+  nil = new RBTreeNode<Key, Value>(Key(), Value(), Color::BLACK);
+  root = nil;
+}
+
+template <typename Key, typename Value>
+RedBlackTree<Key, Value>::~RedBlackTree() {
+  destroyTree(root);
+  delete nil;
+}
+
+template <typename Key, typename Value>
+void RedBlackTree<Key, Value>::destroyTree(RBTreeNode<Key, Value> *node) {
+  if (node != nil) {
+    destroyTree(node->left);
+    destroyTree(node->right);
+    delete node;
+  }
+}
+
+template <typename Key, typename Value>
+void RedBlackTree<Key, Value>::leftRotate(RBTreeNode<Key, Value> *x) {
+  RBTreeNode<Key, Value> *y = x->right;
+  x->right = y->left;
+
+  if (y->left != nil) {
+    y->left->parent = x;
+  }
+
+  y->parent = x->parent;
+
+  if (x->parent == nil) {
+    root = y;
+  } else if (x == x->parent->left) {
+    x->parent->left = y;
+  } else {
+    x->parent->right = y;
+  }
+
+  y->left = x;
+  x->parent = y;
+}
+
+template <typename Key, typename Value>
+void RedBlackTree<Key, Value>::rightRotate(RBTreeNode<Key, Value> *y) {
+  RBTreeNode<Key, Value> *x = y->left;
+  y->left = x->right;
+
+  if (x->right != nil) {
+    x->right->parent = y;
+  }
+
+  x->parent = y->parent;
+
+  if (y->parent == nil) {
+    root = x;
+  } else if (y == y->parent->right) {
+    y->parent->right = x;
+  } else {
+    y->parent->left = x;
+  }
+
+  x->right = y;
+  y->parent = x;
+}
+
+template <typename Key, typename Value>
+void RedBlackTree<Key, Value>::insert(const Key &key, const Value &value) {
+  RBTreeNode<Key, Value> *z = new RBTreeNode<Key, Value>(key, value);
+  RBTreeNode<Key, Value> *y = nil;
+  RBTreeNode<Key, Value> *x = root;
+
+  // 标准的BST插入
+  while (x != nil) {
+    y = x;
+    if (z->key < x->key) {
+      x = x->left;
+    } else {
+      x = x->right;
+    }
+  }
+
+  z->parent = y;
+  if (y == nil) {
+    root = z;
+  } else if (z->key < y->key) {
+    y->left = z;
+  } else {
+    y->right = z;
+  }
+
+  z->left = nil;
+  z->right = nil;
+  z->color = Color::RED;
+
+  insertFixup(z);
+}
+
+template <typename Key, typename Value>
+void RedBlackTree<Key, Value>::insertFixup(RBTreeNode<Key, Value> *z) {
+  while (z->parent->color == Color::RED) {
+    if (z->parent == z->parent->parent->left) {
+      RBTreeNode<Key, Value> *y = z->parent->parent->right;
+
+      // Case 1: 叔叔节点是红色
+      if (y->color == Color::RED) {
+        z->parent->color = Color::BLACK;
+        y->color = Color::BLACK;
+        z->parent->parent->color = Color::RED;
+        z = z->parent->parent;
+      } else {
+        // Case 2: z是右孩子
+        if (z == z->parent->right) {
+          z = z->parent;
+          leftRotate(z);
+        }
+        // Case 3: z是左孩子
+        z->parent->color = Color::BLACK;
+        z->parent->parent->color = Color::RED;
+        rightRotate(z->parent->parent);
+      }
+    } else {
+      // 对称的情况
+      RBTreeNode<Key, Value> *y = z->parent->parent->left;
+
+      if (y->color == Color::RED) {
+        z->parent->color = Color::BLACK;
+        y->color = Color::BLACK;
+        z->parent->parent->color = Color::RED;
+        z = z->parent->parent;
+      } else {
+        if (z == z->parent->left) {
+          z = z->parent;
+          rightRotate(z);
+        }
+        z->parent->color = Color::BLACK;
+        z->parent->parent->color = Color::RED;
+        leftRotate(z->parent->parent);
+      }
+    }
+  }
+  root->color = Color::BLACK;
+}
+
+template <typename Key, typename Value>
+Value *RedBlackTree<Key, Value>::search(const Key &key) const {
+  RBTreeNode<Key, Value> *current = root;
+
+  while (current != nil) {
+    if (key == current->key) {
+      return &(current->value);
+    } else if (key < current->key) {
+      current = current->left;
+    } else {
+      current = current->right;
+    }
+  }
+
+  return nullptr; // 没有找到
+}
+
+template <typename Key, typename Value>
+void RedBlackTree<Key, Value>::inOrderTraversal() const {
+  inOrderHelper(root);
+  std::cout << std::endl;
+}
+
+template <typename Key, typename Value>
+void RedBlackTree<Key, Value>::inOrderHelper(
+    RBTreeNode<Key, Value> *node) const {
+  if (node != nil) {
+    inOrderHelper(node->left);
+    std::cout << "(" << node->key << ": " << node->value << ", "
+              << (node->color == Color::RED ? "RED" : "BLACK") << ") ";
+    inOrderHelper(node->right);
+  }
+}
+} // namespace red_black_tree

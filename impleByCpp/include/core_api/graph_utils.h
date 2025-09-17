@@ -2,6 +2,7 @@
 #define GRAPH_UTILS_H
 
 #include <map>
+#include <stack>
 #include <utility>
 #include <vector>
 // #include <linalg> c++26
@@ -20,7 +21,7 @@ const char NULL_VERTEX = '#';
 typedef char VertexType;
 typedef int EdgeType;
 
-// --------- Matrix (for both directed and undirected graph)----------
+namespace common_graph_utils {
 struct Edge {
   int _src;
   int _dest;
@@ -73,9 +74,9 @@ public:
   std::vector<VertexType> getAdjacentVertices(const VertexType &vertex);
   EdgeType getEdgeWeight(const VertexType &src, const VertexType &dest);
 };
+} // namespace common_graph_utils
 
-// --------- Directed Graph ---------
-// Adjacency List
+namespace directed_graph_utils {
 struct AdjListNode {
   VertexType _vertex;
   EdgeType _weight;
@@ -92,7 +93,6 @@ struct Graph {
 private:
   unsigned int _numOfVertices;
   unsigned int _numOfEdges;
-  unsigned int _connectedComponentNum; // 强连通分量数
   std::vector<VertexNode> _vertexList;
   std::map<std::pair<VertexType, VertexType>, EdgeType> _edgeList; // optional
   std::vector<bool> visited;
@@ -103,17 +103,20 @@ private:
 public:
   Graph(unsigned int numOfVertices = 8, unsigned int numOfEdges = 10);
   ~Graph();
-  int getConnectedComponentNum() const;
+  Graph transpose() const; // 逆邻接图
+  int getConnectedComponentNum();
   int position(const VertexType &vertex);
   int indegree(const VertexType &vertex);
   int outdegree(const VertexType &vertex);
-  void connectedComponent();
+  int shortestPath(const VertexType &src, const VertexType &dest);
+  std::vector<std::vector<VertexType>> Kosaraju_StronglyConnectedComponents();
   void initEdge(const VertexType &src, const VertexType &dest,
                 const EdgeType &weight);
   void printGraph();
   void printCycle(const std::vector<VertexType> &cycle);
   void DFS_recursive_util(const VertexType &current,
                           std::vector<bool> &visited);
+  void fillOrder(VertexType v, std::stack<VertexType> &stack);
   bool
   initGraph(std::vector<VertexType> &vertexList,
             std::map<std::pair<VertexType, VertexType>, EdgeType> &edgeList);
@@ -131,5 +134,5 @@ public:
   bool is_cyclic();
   EdgeType getEdgeWeight(const VertexType &src, const VertexType &dest);
 };
-
+} // namespace directed_graph_utils
 #endif // GRAPH_UTILS_H

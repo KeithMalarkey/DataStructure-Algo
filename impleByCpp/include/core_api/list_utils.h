@@ -1,6 +1,5 @@
 #ifndef UTILS_H
 #define UTILS_H
-#include <iostream>
 #include <vector>
 typedef int NodeVal;
 typedef struct ListNode {

@@ -1,12 +1,9 @@
 #ifndef ARRAY_UTILS_H
 #define ARRAY_UTILS_H
 // 主要引入数组实现的线性表
-
-#include <algorithm>
-#include <iostream>
-#include <memory>
 #include <vector>
 
+namespace ArrayUtils {
 void printList(const std::vector<int> &list);
 void bubble_sort(std::vector<int> &list);    // 冒泡排序
 void selection_sort(std::vector<int> &list); // 选择排序
@@ -26,5 +23,6 @@ void count_sort(std::vector<int> &list, const int &min_val,
 void bucket_sort(std::vector<int> &list);     // 桶排序
 void radix_sort(std::vector<int> &list);      // 基数排序
 void opt_bubble_sort(std::vector<int> &list); // 优化的冒泡排序
+} // namespace ArrayUtils
 
 #endif // ARRAY_UTILS_H

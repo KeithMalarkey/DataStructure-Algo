@@ -1,17 +1,5 @@
 #include "core_api/search_utils.h"
 
-// int main() {
-//   std::vector<int> nums = {1, 2, 3, 4, 5};
-//   int target = 3;
-//   int index = binarySearch(nums, target);
-//   if (index == -1) {
-//     std::cout << "Element not found in the array" << std::endl;
-//   } else {
-//     std::cout << "Element found at index " << index << std::endl;
-//   }
-//   return 0;
-// }
-
 int linearSearch(const std::vector<int> &arr, const int &target) {
   int index = -1;
   for (int i = 0; i < arr.size(); i++) {

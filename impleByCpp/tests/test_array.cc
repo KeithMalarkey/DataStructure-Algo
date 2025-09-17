@@ -7,8 +7,8 @@
 TEST(ArrayTest, bubble_sort) {
   std::vector<int> list{5, 3, 8, 6, 2, 7, 1, 9, 4};
   std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  bubble_sort(list);
-  printList(list);
+  ArrayUtils::bubble_sort(list);
+  ArrayUtils::printList(list);
   EXPECT_TRUE(list == expected);
 }
 
@@ -16,8 +16,8 @@ TEST(ArrayTest, bubble_sort) {
 TEST(ArrayTest, quick_sort) {
   std::vector<int> list{5, 3, 8, 6, 2, 7, 1, 9, 4};
   std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  quick_sort(list, 0, list.size() - 1);
-  printList(list);
+  ArrayUtils::quick_sort(list, 0, list.size() - 1);
+  ArrayUtils::printList(list);
   EXPECT_TRUE(list == expected);
 }
 
@@ -25,8 +25,8 @@ TEST(ArrayTest, quick_sort) {
 TEST(ArrayTest, selection_sort) {
   std::vector<int> list{5, 3, 8, 6, 2, 7, 1, 9, 4};
   std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  selection_sort(list);
-  printList(list);
+  ArrayUtils::selection_sort(list);
+  ArrayUtils::printList(list);
   EXPECT_TRUE(list == expected);
 }
 
@@ -34,8 +34,8 @@ TEST(ArrayTest, selection_sort) {
 TEST(ArrayTest, insertion_sort) {
   std::vector<int> list{5, 3, 8, 6, 2, 7, 1, 9, 4};
   std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  insertion_sort(list);
-  printList(list);
+  ArrayUtils::insertion_sort(list);
+  ArrayUtils::printList(list);
   EXPECT_TRUE(list == expected);
 }
 
@@ -43,8 +43,8 @@ TEST(ArrayTest, insertion_sort) {
 TEST(ArrayTest, heap_sort) {
   std::vector<int> list{5, 3, 8, 6, 2, 7, 1, 9, 4};
   std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  heap_sort(list);
-  printList(list);
+  ArrayUtils::heap_sort(list);
+  ArrayUtils::printList(list);
   EXPECT_TRUE(list == expected);
 }
 
@@ -52,8 +52,8 @@ TEST(ArrayTest, heap_sort) {
 TEST(ArrayTest, merge_sort) {
   std::vector<int> list{5, 3, 8, 6, 2, 7, 1, 9, 4};
   std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  merge_sort(list, 0, list.size() - 1);
-  printList(list);
+  ArrayUtils::merge_sort(list, 0, list.size() - 1);
+  ArrayUtils::printList(list);
   EXPECT_TRUE(list == expected);
 }
 
@@ -61,8 +61,8 @@ TEST(ArrayTest, merge_sort) {
 TEST(ArrayTest, shell_sort) {
   std::vector<int> list{5, 3, 8, 6, 2, 7, 1, 9, 4};
   std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  shell_sort(list);
-  printList(list);
+  ArrayUtils::shell_sort(list);
+  ArrayUtils::printList(list);
   EXPECT_TRUE(list == expected);
 }
 
@@ -70,9 +70,9 @@ TEST(ArrayTest, shell_sort) {
 TEST(ArrayTest, count_sort) {
   std::vector<int> list{5, 3, 8, 6, 2, 7, 1, 9, 4};
   std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  count_sort(list, *std::min_element(list.begin(), list.end()),
+  ArrayUtils::count_sort(list, *std::min_element(list.begin(), list.end()),
              *std::max_element(list.begin(), list.end()));
-  printList(list);
+  ArrayUtils::printList(list);
   EXPECT_TRUE(list == expected);
 }
 
@@ -80,8 +80,8 @@ TEST(ArrayTest, count_sort) {
 TEST(ArrayTest, opt_bubble_sort) {
   std::vector<int> list{5, 3, 8, 6, 2, 7, 1, 9, 4};
   std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  opt_bubble_sort(list);
-  printList(list);
+  ArrayUtils::opt_bubble_sort(list);
+  ArrayUtils::printList(list);
   EXPECT_TRUE(list == expected);
 }
 
@@ -89,7 +89,7 @@ TEST(ArrayTest, opt_bubble_sort) {
 TEST(ArrayTest, radix_sort) {
   std::vector<int> list{5, 3, 8, 6, 2, 7, 1, 9, 4};
   std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  radix_sort(list);
-  printList(list);
+  ArrayUtils::radix_sort(list);
+  ArrayUtils::printList(list);
   EXPECT_TRUE(list == expected);
 }
