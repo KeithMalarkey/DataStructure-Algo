@@ -1,5 +1,7 @@
-#include "utils.h"
-
+#include "coco_utils.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 // ***********
 // * 线索二叉树
 // * 二叉搜索树
@@ -7,7 +9,6 @@
 // * 红黑树
 // * 哈(霍)曼树/霍夫曼编码
 
-int main() { return 0; }
 
 // ***********线索化二叉树**********
 void test_on_threaded_tree() {}

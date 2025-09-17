@@ -2,9 +2,7 @@
 #define UTILS_H
 
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
 
 typedef int NodeValue;
 typedef struct TreeNode {
@@ -40,6 +38,5 @@ void postorder_threaded_traversal(ThreadedTreeNode *root);
 // -------- BST
 
 // -------- Huffman
-
 
 #endif

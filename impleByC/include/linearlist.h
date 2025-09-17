@@ -2,7 +2,6 @@
 #define LINEARLIST_H
 
 // 主要引入数组实现的线性表
-#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct {

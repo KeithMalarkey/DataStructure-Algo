@@ -1,37 +1,38 @@
-#include "utils.h"
-// #include <stddef.h>
+#include "search_utils.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-int main() {
-  LinearList *arr = malloc(sizeof(LinearList));
-  arr->data = malloc(10 * sizeof(int));
-  arr->size = 10;
-  arr->capacity = 10;
-  for (int i = 0; i < arr->size; i++) {
-    arr->data[i] = rand() % 100; // Fill with random numbers
-  }
-  printf("Original array: ");
-  print_array(arr);
-  sort(arr);
-  printf("Sorted array: ");
-  print_array(arr);
-  int target1 = 35, target2 = 50;
-  printf("Searching for %d using binary search:\n", target1);
-  binary_search(arr->data, arr->size, target1);
-  printf("Searching for %d using linear search:\n", target2);
-  linear_search(arr->data, arr->size, target2);
+// int main() {
+//   LinearList *arr = malloc(sizeof(LinearList));
+//   arr->data = malloc(10 * sizeof(int));
+//   arr->size = 10;
+//   arr->capacity = 10;
+//   for (int i = 0; i < arr->size; i++) {
+//     arr->data[i] = rand() % 100; // Fill with random numbers
+//   }
+//   printf("Original array: ");
+//   print_array(arr);
+//   sort(arr);
+//   printf("Sorted array: ");
+//   print_array(arr);
+//   int target1 = 35, target2 = 50;
+//   printf("Searching for %d using binary search:\n", target1);
+//   binary_search(arr->data, arr->size, target1);
+//   printf("Searching for %d using linear search:\n", target2);
+//   linear_search(arr->data, arr->size, target2);
 
-  for (int i = 0; i < arr->size; i++) {
-    arr->data[i] = i * 2;
-  }
-  printf("Array for interpolation search: ");
-  print_array(arr);
-  int target3 = 5, target4 = 8;
-  printf("Searching for %d using interpolation search:\n", target3);
-  interploation_search(arr, target3);
-  printf("Searching for %d using interpolation search:\n", target4);
-  interploation_search(arr, target4);
-  return 0;
-}
+//   for (int i = 0; i < arr->size; i++) {
+//     arr->data[i] = i * 2;
+//   }
+//   printf("Array for interpolation search: ");
+//   print_array(arr);
+//   int target3 = 5, target4 = 8;
+//   printf("Searching for %d using interpolation search:\n", target3);
+//   interploation_search(arr, target3);
+//   printf("Searching for %d using interpolation search:\n", target4);
+//   interploation_search(arr, target4);
+//   return 0;
+// }
 
 /**
  * @brief 斐波那契查找

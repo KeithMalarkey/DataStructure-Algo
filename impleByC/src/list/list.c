@@ -1,4 +1,5 @@
 #include "linklist.h"
+#include "linearlist.h"
 #include "utils.h"
 #include <stdio.h>
 
@@ -11,73 +12,73 @@
 // *分治->递归(先/后递归)
 // todo跳表
 
-int main() {
-  LinearList list;
-  list.data = NULL; // 假设数据指针未初始化
-  list.size = 0;
-  list.capacity = 0;
+// int main() {
+//   LinearList list;
+//   list.data = NULL; // 假设数据指针未初始化
+//   list.size = 0;
+//   list.capacity = 0;
 
-  // 测试 isEmpty
-  if (isEmpty(&list)) {
-    printf("List is empty.\n");
-  } else {
-    printf("List is not empty.\n");
-  }
+//   // 测试 isEmpty
+//   if (isEmpty(&list)) {
+//     printf("List is empty.\n");
+//   } else {
+//     printf("List is not empty.\n");
+//   }
 
-  // 测试 getSize
-  printf("Size of list: %d\n", getSize(&list));
+//   // 测试 getSize
+//   printf("Size of list: %d\n", getSize(&list));
 
-  // 测试 getCapacity
-  printf("Capacity of list: %d\n", getCapacity(&list));
+//   // 测试 getCapacity
+//   printf("Capacity of list: %d\n", getCapacity(&list));
 
-  // 测试 getFirst
-  int first = getFirst(&list);
-  if (first == -(1 << 10)) {
-    printf("List is empty, no first element.\n");
-  } else {
-    printf("First element: %d\n", first);
-  }
+//   // 测试 getFirst
+//   int first = getFirst(&list);
+//   if (first == -(1 << 10)) {
+//     printf("List is empty, no first element.\n");
+//   } else {
+//     printf("First element: %d\n", first);
+//   }
 
-  // 测试 getLast
-  int last = getLast(&list);
-  if (last == -(1 << 10)) {
-    printf("List is empty, no last element.\n");
-  } else {
-    printf("Last element: %d\n", last);
-  }
+//   // 测试 getLast
+//   int last = getLast(&list);
+//   if (last == -(1 << 10)) {
+//     printf("List is empty, no last element.\n");
+//   } else {
+//     printf("Last element: %d\n", last);
+//   }
 
-  LinearList anotherList;
-  anotherList.data = (int[]){1, 2, 3, 4, 5};
-  anotherList.size = 5;
-  anotherList.capacity = 10;
+//   LinearList anotherList;
+//   anotherList.data = (int[]){1, 2, 3, 4, 5};
+//   anotherList.size = 5;
+//   anotherList.capacity = 10;
 
-  for (int i = 0; i < anotherList.size; i++) {
-    printf("Element %d: %d\n", i, anotherList.data[i]);
-  }
+//   for (int i = 0; i < anotherList.size; i++) {
+//     printf("Element %d: %d\n", i, anotherList.data[i]);
+//   }
 
-  printf("First element of another list: %d\n", getFirst(&anotherList));
-  printf("Last element of another list: %d\n", getLast(&anotherList));
+//   printf("First element of another list: %d\n", getFirst(&anotherList));
+//   printf("Last element of another list: %d\n", getLast(&anotherList));
 
-  LinearList sortList;
-  sortList.data = (int[]){7, 3, 31, 10, 2};
-  sortList.size = 5;
-  sortList.capacity = 10;
+//   LinearList sortList;
+//   sortList.data = (int[]){7, 3, 31, 10, 2};
+//   sortList.size = 5;
+//   sortList.capacity = 10;
 
-  // bubble_sort(&sortList);
-  // quick_sort(&sortList, 0, sortList.size - 1);
-  // selection_sort(&sortList);
-  // heap_sort(&sortList);
-  //   insertion_sort(&sortList);
-  // merge_sort(&sortList, 0, sortList.size - 1);
-  // shell_sort(&sortList);
-  // count_sort(&sortList);
-  // opt_bubble_sort(&sortList);
-  radix_sort(&sortList);
-  printList(&sortList);
+//   // bubble_sort(&sortList);
+//   // quick_sort(&sortList, 0, sortList.size - 1);
+//   // selection_sort(&sortList);
+//   // heap_sort(&sortList);
+//   //   insertion_sort(&sortList);
+//   // merge_sort(&sortList, 0, sortList.size - 1);
+//   // shell_sort(&sortList);
+//   // count_sort(&sortList);
+//   // opt_bubble_sort(&sortList);
+//   radix_sort(&sortList);
+//   printList(&sortList);
 
-  test_on_linklist();
-  return 0;
-}
+//   test_on_linklist();
+//   return 0;
+// }
 
 // ------------------------------------- LinearList
 // --------------------------------
