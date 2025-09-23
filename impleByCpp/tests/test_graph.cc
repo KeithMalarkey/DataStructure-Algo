@@ -1,24 +1,23 @@
 #include "core_api/graph_utils.h"
 #include <gtest/gtest.h>
 
+directed_graph_utils::Graph
+    graph(8, 14); // create a graph with 8 vertices and 10 edges
+std::vector<VertexType> vertexList{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
+std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList2 = {
+    {{'A', 'B'}, 3}, {{'A', 'C'}, 5},  {{'A', 'D'}, 11}, {{'B', 'C'}, 8},
+    {{'B', 'D'}, 9}, {{'F', 'A'}, 1},  {{'C', 'D'}, 22}, {{'C', 'E'}, 8},
+    {{'D', 'E'}, 9}, {{'E', 'F'}, 10}, {{'F', 'B'}, 2},  {{'G', 'H'}, 3},
+    {{'G', 'B'}, 6}, {{'H', 'C'}, 4}};
+bool result = graph.initGraph(vertexList, edgeList2);
+
 TEST(GraphUtils, isEdge) {
-  directed_graph_utils::Graph graph(8, 14); // create a graph with 8 vertices and 10 edges
-  std::vector<VertexType> vertexList{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
-  std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList2 = {
-      {{'A', 'B'}, 3}, {{'A', 'C'}, 5},  {{'A', 'D'}, 11}, {{'B', 'C'}, 8},
-      {{'B', 'D'}, 9}, {{'F', 'A'}, 1},  {{'C', 'D'}, 22}, {{'C', 'E'}, 8},
-      {{'D', 'E'}, 9}, {{'E', 'F'}, 10}, {{'F', 'B'}, 2},  {{'G', 'H'}, 3},
-      {{'G', 'B'}, 6}, {{'H', 'C'}, 4}};
-  bool result = graph.initGraph(vertexList, edgeList2);
   EXPECT_TRUE(graph.isEdge('A', 'B'));
   EXPECT_TRUE(graph.isEdge('C', 'D'));
   EXPECT_TRUE(graph.isEdge('E', 'F'));
 }
 
 TEST(GraphTest, initGraphList) {
-  directed_graph_utils::Graph graph(8, 14); // create a graph with 8 vertices and 10 edges
-  std::vector<VertexType> vertexList{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
-
   // invalid input
   std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList = {
       {{'A', 'B'}, 1}, {{'A', 'C'}, 2},  {{'A', 'D'}, 3},  {{'B', 'C'}, 4},
@@ -28,12 +27,6 @@ TEST(GraphTest, initGraphList) {
   graph.initGraph(vertexList, edgeList);
   graph.printGraph(); // print empty graph with "#"
 
-  std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList2 = {
-      {{'A', 'B'}, 3}, {{'A', 'C'}, 5},  {{'A', 'D'}, 11}, {{'B', 'C'}, 8},
-      {{'B', 'D'}, 9}, {{'F', 'A'}, 1},  {{'C', 'D'}, 22}, {{'C', 'E'}, 8},
-      {{'D', 'E'}, 9}, {{'E', 'F'}, 10}, {{'F', 'B'}, 2},  {{'G', 'H'}, 3},
-      {{'G', 'B'}, 6}, {{'H', 'C'}, 4}};
-  bool result = graph.initGraph(vertexList, edgeList2);
   EXPECT_TRUE(result);
   std::cout << "Graph with " << vertexList.size() << " vertices and "
             << edgeList2.size() << " edges:" << std::endl;
@@ -41,34 +34,19 @@ TEST(GraphTest, initGraphList) {
 }
 
 TEST(GraphTest, addEdge) {
-  directed_graph_utils::Graph graph(8, 14); // create a graph with 8 vertices and 10 edges
-  std::vector<VertexType> vertexList{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
-  std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList2 = {
-      {{'A', 'B'}, 3}, {{'A', 'C'}, 5},  {{'A', 'D'}, 11}, {{'B', 'C'}, 8},
-      {{'B', 'D'}, 9}, {{'F', 'A'}, 1},  {{'C', 'D'}, 22}, {{'C', 'E'}, 8},
-      {{'D', 'E'}, 9}, {{'E', 'F'}, 10}, {{'F', 'B'}, 2},  {{'G', 'H'}, 3},
-      {{'G', 'B'}, 6}, {{'H', 'C'}, 4}};
-  graph.initGraph(vertexList, edgeList2);
   graph.addEdge('X', 'Y', 7);  // vertex X and Y do not exist
   graph.addEdge('A', 'B', 10); // edge already exists
   graph.addEdge('C', 'A', 8);  // add an edge
 }
 
 TEST(GraphTest, addVertex) {
-  directed_graph_utils::Graph graph(8, 14); // create a graph with 8 vertices and 10 edges
-  std::vector<VertexType> vertexList{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
-  std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList2 = {
-      {{'A', 'B'}, 3}, {{'A', 'C'}, 5},  {{'A', 'D'}, 11}, {{'B', 'C'}, 8},
-      {{'B', 'D'}, 9}, {{'F', 'A'}, 1},  {{'C', 'D'}, 22}, {{'C', 'E'}, 8},
-      {{'D', 'E'}, 9}, {{'E', 'F'}, 10}, {{'F', 'B'}, 2},  {{'G', 'H'}, 3},
-      {{'G', 'B'}, 6}, {{'H', 'C'}, 4}};
-  graph.initGraph(vertexList, edgeList2);
   graph.addVertex('I');
   graph.addVertex('J');
 }
 
 TEST(GraphTest, InandOutDegree) {
-  directed_graph_utils::Graph graph(8, 14); // create a graph with 8 vertices and 10 edges
+  directed_graph_utils::Graph graph(
+      8, 14); // create a graph with 8 vertices and 10 edges
   std::vector<VertexType> vertexList{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
   std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList2 = {
       {{'A', 'B'}, 3}, {{'A', 'C'}, 5},  {{'A', 'D'}, 11}, {{'B', 'C'}, 8},
@@ -165,5 +143,15 @@ TEST(GraphTest, connectedComponents) {
       {{'B', 'D'}, 5}, {{'C', 'D'}, 2}, {{'C', 'F'}, 6}, {{'E', 'F'}, 5}};
   graph.initGraph(vertexList, edgeList2);
   // EXPECT_EQ(graph.getConnectedComponentNum(), 1); // failure case
-  EXPECT_EQ(graph.getConnectedComponentNum(), 0); 
+  EXPECT_EQ(graph.getConnectedComponentNum(), 0);
+}
+
+TEST(GraphTest, topologicalSort){
+  directed_graph_utils::Graph graph(6, 6);
+  std::vector<VertexType> vertexList{'A', 'B', 'C', 'D', 'E', 'F'};
+  std::map<std::pair<VertexType, VertexType>, EdgeType> edgeList2 = {
+      {{'A', 'B'}, 1}, {{'A', 'C'}, 3}, {{'B', 'D'}, 4},
+      {{'C', 'D'}, 2}, {{'D', 'E'}, 5}, {{'E', 'F'}, 6}};
+  graph.initGraph(vertexList, edgeList2);
+  graph.topologicalSort();
 }
