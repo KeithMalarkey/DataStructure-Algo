@@ -77,6 +77,8 @@ public:
 } // namespace common_graph_utils
 
 namespace directed_graph_utils {
+// 邻接表 --- 适合稀疏图;此外,邻接表在设计逻辑上可以是一个拉链式散列表hash
+// table,只是少了散列函数和负载因子
 struct AdjListNode {
   VertexType _vertex;
   EdgeType _weight;
@@ -117,6 +119,7 @@ public:
   void DFS_recursive_util(const VertexType &current,
                           std::vector<bool> &visited);
   void fillOrder(VertexType v, std::stack<VertexType> &stack);
+  void topologicalSort();
   bool
   initGraph(std::vector<VertexType> &vertexList,
             std::map<std::pair<VertexType, VertexType>, EdgeType> &edgeList);
