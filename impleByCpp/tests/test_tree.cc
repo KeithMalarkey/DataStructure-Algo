@@ -1,7 +1,10 @@
 #include "core_api/tree_utils.h"
 #include "gtest/gtest.h"
+#include <bits/stdc++.h>
 #include <iostream>
 #include <set>
+#include <string>
+#include <vector>
 using namespace binary_tree;
 
 std::vector<NodeVal> _vals{3, 1, 8, 4, 7, 5, 2, 6, NULL_NODE, NULL_NODE, 11};
@@ -12,43 +15,36 @@ TEST(tree_test, create_tree) { EXPECT_TRUE(root != nullptr); }
 TEST(tree_test, preorderTraversal) {
   std::cout << "Preorder Traversal: ";
   EXPECT_FALSE(!preorderTraversal(root));
-  std::cout << std::endl;
 }
 
 TEST(tree_test, inorderTraversal) {
   std::cout << "Inorder Traversal: ";
   EXPECT_FALSE(!inorderTraversal(root));
-  std::cout << std::endl;
 }
 
 TEST(tree_test, postorderTraversal) {
   std::cout << "Postorder Traversal: ";
   EXPECT_FALSE(!postorderTraversal(root));
-  std::cout << std::endl;
 }
 
 TEST(tree_test, levelorderTraversal) {
   std::cout << "Levelorder Traversal: ";
   EXPECT_TRUE(levelorderTraversal(root));
-  std::cout << std::endl;
 }
 
 TEST(tree_test, norecursion_preorderTraversal) {
   std::cout << "No recursion Preorder Traversal: ";
   EXPECT_TRUE(norecursion_preorderTraversal(root));
-  std::cout << std::endl;
 }
 
 TEST(tree_test, norecursion_inorderTraversal) {
   std::cout << "No recursion Inorder Traversal: ";
   EXPECT_TRUE(norecursion_inorderTraversal(root));
-  std::cout << std::endl;
 }
 
 TEST(tree_test, norecursion_postorderTraversal) {
   std::cout << "No recursion Postorder Traversal: ";
   EXPECT_TRUE(norecursion_postorderTraversal(root));
-  std::cout << std::endl;
 }
 
 TEST(tree_test, height) { EXPECT_EQ(4, height(root)); }
@@ -104,6 +100,178 @@ TEST(tree_test, LCA) {
 TEST(tree_test, twin) {
   BTreeNode *twin = twin_node(root, 2);
   EXPECT_TRUE(twin->val == 5);
+}
+
+TEST(tree_test, node_count) { EXPECT_EQ(5, node_size(root->left)); }
+
+TEST(tree_test, cousins) {
+  std::vector<BTreeNode *> cousins = collect_cousins(root, 4);
+  EXPECT_EQ(2, cousins.size());
+  for (const auto &node : cousins) {
+    EXPECT_TRUE(node->val == 2 || node->val == 5);
+  }
+}
+
+std::string text = "hello world";
+huffman_tree::HuffmanTree hft;
+
+TEST(huffman_test, Buildfromtext) {
+  hft.buildFromText(text);
+  hft.displayTree();
+}
+
+TEST(huffman_test, getCode) {
+  hft.buildFromText(text);
+  std::string code = hft.getEncoding('l');
+  std::set<std::string> latent_res{"10", "01"};
+  EXPECT_TRUE(latent_res.find(code) != latent_res.end());
+}
+
+TEST(huffman_test, compressionRatio) {
+  hft.buildFromText(text);
+  double ratio = hft.getCompressionRatio(text);
+  EXPECT_TRUE(ratio < .4); // 压缩率小于40%, ratio越小越好
+}
+
+/**
+ * @brief
+ *(entirw bst)     3
+ *               /   \
+ *             1      8
+ *             \    / \
+ *              2  4   10
+ *                  \
+ *                   7
+ *                  /
+ *                 5
+ *                  \
+ *                   6
+ */
+
+TEST(BST_test, bst_tree_inorder) {
+  std::vector<NodeVal> vals{3, 1, 8, 4, 7, 5, 2, 6, 10, 7};
+  binary_tree::binary_search_tree::BST bst;
+  bst.createTree(vals);
+  bool res = binary_tree::inorderTraversal(bst.getRoot());
+  EXPECT_TRUE(res);
+}
+
+TEST(BST_test, bst_tree_remove) {
+  std::vector<NodeVal> vals{3, 1, 8, 4, 7, 5, 2, 6, 10, 7};
+  binary_tree::binary_search_tree::BST bst;
+  bst.createTree(vals);
+  bst.remove(10);
+  bool res = binary_tree::inorderTraversal(bst.getRoot());
+  EXPECT_TRUE(res);
+}
+
+TEST(BST_test, bst_tree_search) {
+  std::vector<NodeVal> vals{3, 1, 8, 4, 7, 5, 2, 6, 10, 7};
+  binary_tree::binary_search_tree::BST bst;
+  bst.createTree(vals);
+  EXPECT_FALSE(!bst.search(10));
+}
+
+TEST(BST_test, bst_tree_insert) {
+  std::vector<NodeVal> vals{3, 1, 8, 4, 7, 5, 2, 6, 10, 7};
+  binary_tree::binary_search_tree::BST bst;
+  bst.createTree(vals);
+  bst.insert(9);
+  bool res = binary_tree::inorderTraversal(bst.getRoot());
+  EXPECT_TRUE(res);
+}
+
+TEST(BST_test, bst_tree_successor) {
+  std::vector<NodeVal> vals{3, 1, 8, 4, 7, 5, 2, 6, 10, 7};
+  binary_tree::binary_search_tree::BST bst;
+  bst.createTree(vals);
+  NodeVal suc = bst.successor(7);
+  EXPECT_EQ(8, suc);
+  // suc = bst.successor(11);
+  // suc = bst.successor(10);
+}
+
+TEST(BST_test, bst_tree_predecessor) {
+  std::vector<NodeVal> vals{3, 1, 8, 4, 7, 5, 2, 6, 10, 7};
+  binary_tree::binary_search_tree::BST bst;
+  bst.createTree(vals);
+  NodeVal pre = bst.predecessor(7);
+  EXPECT_EQ(6, pre);
+  // pre = bst.predecessor(1);
+}
+
+TEST(trie_test, trie_insert_search) {
+  trie_tree::Trie trie;
+  trie.insert("hello");
+  trie.insert("hello");
+  trie.insert("hell");
+  trie.insert("heaven");
+  trie.insert("heavy");
+
+  EXPECT_EQ(2, trie.search("hello"));
+  EXPECT_EQ(1, trie.search("hell"));
+  EXPECT_EQ(1, trie.search("heaven"));
+  EXPECT_EQ(1, trie.search("heavy"));
+  EXPECT_EQ(0, trie.search("he"));
+  EXPECT_EQ(0, trie.search("helloo"));
+}
+
+TEST(trie_test, preorder_traversal) {
+  trie_tree::Trie trie;
+  trie.insert("hello");
+  trie.insert("hello");
+  trie.insert("hell");
+  trie.insert("china");
+  trie.insert("keith");
+  trie.insert("heaven");
+  trie.insert("heavy");
+  trie.preOrder();
+}
+
+TEST(trie_test, remove_word1) {
+  trie_tree::Trie trie;
+  trie.insert("hello");
+  trie.insert("hello");
+  trie.insert("hell");
+  trie.insert("china");
+  trie.insert("keith");
+  trie.insert("heaven");
+  trie.insert("heavy");
+  trie.preOrder();
+  trie.remove("hello");
+  trie.preOrder();
+}
+
+TEST(trie_test, remove_word2) {
+  trie_tree::Trie trie;
+  trie.insert("hello");
+  trie.insert("hello");
+  trie.insert("hell");
+  trie.insert("china");
+  trie.insert("keith");
+  trie.insert("heaven");
+  trie.insert("heavy");
+  trie.preOrder();
+  trie.remove("heavy");
+  trie.preOrder();
+}
+
+TEST(trie_test, startWith) {
+  trie_tree::Trie trie;
+  trie.insert("hello");
+  trie.insert("hello");
+  trie.insert("hell");
+  trie.insert("china");
+  trie.insert("keith");
+  trie.insert("heaven");
+  trie.insert("heavy");
+  std::vector<std::string> res = trie.startsWith("hea");
+  std::set<std::string> expected_res{"heaven", "heavy"};
+  EXPECT_EQ(res.size(), expected_res.size());
+  for (const auto &word : res) {
+    expected_res.erase(word);
+  }
+  EXPECT_TRUE(expected_res.empty());
 }
 /**
  * @input 3 1 8 4 7 5 2 6
@@ -245,8 +413,8 @@ TEST(tree_test, twin) {
 //   std::vector<NodeVal> preorder{41, 29, 92, 35, 17, 5, 36, 26};
 //   std::vector<NodeVal> inorder{92, 29, 17, 35, 5, 41, 36, 26};
 //   std::vector<NodeVal> postorder{92, 17, 5, 35, 29, 26, 36, 41};
-//   BTreeNode *new_root = build_tree_from_preorder_inorder(preorder, inorder);
-//   std::cout << "Preorder Traversal of new tree: ";
+//   BTreeNode *new_root = build_tree_from_preorder_inorder(preorder,
+//   inorder); std::cout << "Preorder Traversal of new tree: ";
 //   postorderTraversal(new_root);
 //   std::cout << std::endl;
 //   BTreeNode *new_root2 = build_tree_from_inorder_postorder(inorder,
