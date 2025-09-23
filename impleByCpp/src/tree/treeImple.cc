@@ -1,8 +1,7 @@
 #include "core_api/tree_utils.h"
-#include <algorithm>
-#include <iostream>
-#include <queue>
-#include <stack>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace binary_tree {
 /**
@@ -45,68 +44,6 @@ BTreeNode *create_tree(const std::vector<NodeVal> &vals) {
 }
 
 /**
- * @brief Check if a binary tree is empty.
- *
- * @param root
- * @return true
- * @return false
- */
-bool is_empty(BTreeNode *root) {
-  return root == nullptr || root->val == NULL_NODE;
-}
-
-/**
- * @brief pre order traversal of a binary tree.
- *
- * @param root
- * @return true traversed successfully.
- * @return false empty tree.
- */
-bool preorderTraversal(BTreeNode *root) {
-  if (is_empty(root)) {
-    return false;
-  }
-  std::cout << root->val << " ";
-  preorderTraversal(root->left);
-  preorderTraversal(root->right);
-  return true;
-}
-
-/**
- * @brief inoreder traversal of a binary tree.
- *
- * @param root
- * @return true
- * @return false
- */
-bool inorderTraversal(BTreeNode *root) {
-  if (is_empty(root)) {
-    return false;
-  }
-  inorderTraversal(root->left);
-  std::cout << root->val << " ";
-  inorderTraversal(root->right);
-  return true;
-}
-
-/**
- * @brief post order traversal of a binary tree.
- *
- * @param root
- * @return true
- * @return false
- */
-bool postorderTraversal(BTreeNode *root) {
-  if (is_empty(root)) {
-    return false;
-  }
-  postorderTraversal(root->left);
-  postorderTraversal(root->right);
-  std::cout << root->val << " ";
-  return true;
-}
-
-/**
  * @brief Level order traversal of a binary tree.
  *
  * @param root
@@ -129,91 +66,6 @@ bool levelorderTraversal(BTreeNode *root) {
     if (node->right) {
       q.push(node->right);
     }
-  }
-  return true;
-}
-
-/**
- * @brief pre order traversal of a binary tree without recursion.
- *
- * @param root
- * @return true
- * @return false
- */
-bool norecursion_preorderTraversal(BTreeNode *root) {
-  if (is_empty(root)) {
-    return false;
-  }
-  std::stack<BTreeNode *> s;
-  s.push(root);
-  while (!s.empty()) {
-    BTreeNode *node = s.top();
-    s.pop();
-    std::cout << node->val << " ";
-    if (node->right) {
-      s.push(node->right);
-    }
-    if (node->left) {
-      s.push(node->left);
-    }
-  }
-  return true;
-}
-
-/**
- * @brief inorder traversal of a binary tree without recursion.
- *
- * @param root
- * @return true
- * @return false
- */
-bool norecursion_inorderTraversal(BTreeNode *root) {
-  if (is_empty(root)) {
-    return false;
-  }
-  std::stack<BTreeNode *> s;
-  BTreeNode *node = root;
-  while (!s.empty() || node) {
-    if (node) {
-      s.push(node);
-      node = node->left;
-    } else {
-      node = s.top();
-      s.pop();
-      std::cout << node->val << " ";
-      node = node->right;
-    }
-  }
-  return true;
-}
-
-/**
- * @brief post order traversal of a binary tree without recursion.
- *
- * @param root
- * @return true
- * @return false
- */
-bool norecursion_postorderTraversal(BTreeNode *root) {
-  if (is_empty(root)) {
-    return false;
-  }
-  std::stack<BTreeNode *> s1, s2;
-  s1.push(root);
-  while (!s1.empty()) {
-    BTreeNode *node = s1.top();
-    s1.pop();
-    s2.push(node);
-    if (node->left) {
-      s1.push(node->left);
-    }
-    if (node->right) {
-      s1.push(node->right);
-    }
-  }
-  while (!s2.empty()) {
-    std::cout << s2.top()->val << " ";
-    s2.pop();
   }
   return true;
 }
@@ -269,26 +121,6 @@ BTreeNode *getParent(BTreeNode *root, const NodeVal &val) {
     }
   }
   return nullptr;
-}
-
-/**
- * @brief CHECK IF A BINARY TREE IS A VALID BST(binary search tree).
- *
- * @param root
- * @return true
- * @return false
- */
-bool is_valid_bst(BTreeNode *root) {
-  if (is_empty(root)) {
-    return true;
-  }
-  if (root->left && root->left->val >= root->val) {
-    return false;
-  }
-  if (root->right && root->right->val < root->val) {
-    return false;
-  }
-  return is_valid_bst(root->left) && is_valid_bst(root->right);
 }
 
 /**
@@ -574,9 +406,9 @@ std::vector<BTreeNode *> collect_cousins(BTreeNode *root,
     for (int i = 0; i < queue.size(); ++i) {
       BTreeNode *current = queue.front();
       queue.pop();
-      // 检查当前结点的子结点是否和target同层且不是兄弟
+      // 检查当前节点的子节点是否和target同层且不是兄弟
       if (level(root, current->val) == target_level - 1) {
-        // 当前结点的子结点在target层
+        // 当前节点的子节点在target层
         if (current->left && current->left != twin_node(root, target) &&
             current->left != search(root, target)) {
           cousins.push_back(current->left);
@@ -758,6 +590,573 @@ build_tree_from_inorder_postorder(const std::vector<NodeVal> &inorder,
   return root;
 }
 } // namespace binary_tree
+
+namespace binary_tree::huffman_tree {
+HuffmanTree::HuffmanTree() : root_(nullptr) {}
+
+HuffmanTree::~HuffmanTree() { destroyTree(root_); }
+
+void HuffmanTree::destroyTree(HuffmanNode *node) {
+  if (node == nullptr)
+    return;
+  delete root_;
+  root_ = nullptr;
+  // std::cout << "huffman tree destroyed" << std::endl;
+}
+
+/**
+ * @brief Huffman Code with Binary {0, 1}.
+ *
+ * @param node
+ * @param code
+ */
+void HuffmanTree::buildEncodingTable(HuffmanNode *node,
+                                     const std::string &code) {
+  if (node == nullptr)
+    return;
+
+  if (node->isLeaf()) {
+    encodingTable_[node->character] = code;
+    decodingTable_[code] = node->character;
+  } else {
+    buildEncodingTable(node->left, code + "0");
+    buildEncodingTable(node->right, code + "1");
+  }
+}
+
+/**
+ * @brief Build a Huffman Tree from the original text.
+ *
+ * @param text
+ */
+void HuffmanTree::buildFromText(const std::string &text) {
+  std::unordered_map<char, std::pair<int, float>> fm;
+  std::unordered_map<char, float> freqMap;
+  for (char ch : text) {
+    fm[ch].first++;
+  }
+  for (auto &p : fm) {
+    p.second.second = static_cast<float>(p.second.first) / text.length();
+    freqMap[p.first] = p.second.second;
+  }
+  buildFromFrequency(freqMap);
+}
+
+/**
+ * @brief Build a Huffman Tree from a frequency map.
+ *
+ * @param frequencyMap
+ */
+void HuffmanTree::buildFromFrequency(
+    const std::unordered_map<char, float> &frequencyMap) {
+  MiniHeap minHeap; // 小顶堆
+
+  for (const auto &pair : frequencyMap) {
+    minHeap.push(new HuffmanNode(pair.first, pair.second));
+  }
+
+  // 构建哈夫曼树
+  while (minHeap.size() > 1) {
+    HuffmanNode *left = minHeap.top();
+    minHeap.pop();
+    HuffmanNode *right = minHeap.top();
+    minHeap.pop();
+
+    float combinedFreq = left->frequency + right->frequency;
+    HuffmanNode *internalNode = new HuffmanNode(combinedFreq, left, right);
+    minHeap.push(internalNode);
+  }
+
+  root_ = minHeap.top();
+  minHeap.pop();
+
+  // 构建编码表
+  buildEncodingTable(root_, "");
+}
+
+/**
+ * @brief Get encoding table of a Huffman Tree.
+ *  std::string encoded = huffmanTree.encode(text); 你会得到编码后的字符串
+ * @param text
+ * @return std::string
+ */
+std::string HuffmanTree::encode(const std::string &text) const {
+  std::string encodedText;
+  for (char ch : text) {
+    encodedText += encodingTable_.at(ch);
+  }
+  return encodedText;
+}
+
+/**
+ * @brief decoding original text using encoding table of a Huffman Tree.
+ * std::string decoded = huffmanTree.decode(encoded); 你会得到解码后的字符串
+ * @param encodedText 编码后的bits
+ * @return std::string
+ */
+std::string HuffmanTree::decode(const std::string &encodedText) const {
+  std::string decodedText;
+  std::string currentCode;
+
+  for (char bit : encodedText) {
+    currentCode += bit;
+    if (decodingTable_.find(currentCode) != decodingTable_.end()) {
+      decodedText += decodingTable_.at(currentCode);
+      currentCode.clear();
+    }
+  }
+
+  return decodedText;
+}
+
+/**
+ * @brief Get the encoding of a character in the Huffman Tree.
+ *
+ * @param character
+ * @return std::string
+ */
+std::string HuffmanTree::getEncoding(char character) const {
+  if (encodingTable_.find(character) != encodingTable_.end()) {
+    return encodingTable_.at(character);
+  }
+  return ""; // 字符不存在
+}
+
+/**
+ * @brief Get the compression ratio of a text using the Huffman Tree.
+ *
+ * @param originalText origin string represented by ASCII.
+ * @return double
+ */
+double HuffmanTree::getCompressionRatio(const std::string &originalText) const {
+  if (originalText.empty())
+    return 0.0;
+
+  std::string encoded = encode(originalText);
+  double originalBits = originalText.length() * 8.0; // 假设原始是ASCII
+  double compressedBits = encoded.length();
+
+  return compressedBits / originalBits;
+}
+
+void HuffmanTree::displayTree() const {
+  std::cout << "哈夫曼树结构（含编码）:" << std::endl;
+  displayTreeHelper(root_, "");
+}
+
+/**
+ * @brief
+ *
+ * @param node root node of the Huffman Tree.
+ * @param code current encoding table of the Huffman Tree.
+ */
+void HuffmanTree::displayTreeHelper(HuffmanNode *node,
+                                    const std::string &code) const {
+  if (node == nullptr)
+    return;
+
+  if (node->isLeaf()) {
+    std::cout << "字符: '" << node->character << "' 频率: " << node->frequency
+              << " 编码: " << code << std::endl;
+  } else {
+    // 递归左子树（添加'0'）
+    displayTreeHelper(node->left, code + "0");
+    // 递归右子树（添加'1'）
+    displayTreeHelper(node->right, code + "1");
+  }
+}
+
+} // namespace binary_tree::huffman_tree
+
+namespace binary_tree::binary_search_tree {
+BST::BST() : root(nullptr) {}
+BST::~BST() { destroyTree(); }
+
+void BST::createTree(const std::vector<NodeVal> &values) {
+  for (const NodeVal &value : values) {
+    insert(value);
+  }
+}
+
+void BST::destroyTree() {
+  if (root != nullptr) {
+    delete root;
+    root = nullptr;
+  }
+}
+
+bool BST::search(const NodeVal &key) const {
+  return searchHelper(root, key) != nullptr;
+}
+
+void BST::insert(const NodeVal &key) { root = insertHelper(root, key); }
+
+void BST::remove(const NodeVal &key) {
+  if (!search(key))
+    return;
+  root = removeHelper(root, key);
+}
+
+/**
+ * @brief Insert a node into a binary search tree.
+ *
+ * @param node
+ * @param key
+ * @return BTreeNode* root of the modified binary search tree.
+ */
+BTreeNode *BST::insertHelper(BTreeNode *node, const NodeVal &key) {
+  if (node == nullptr) {
+    return new BTreeNode(key);
+  }
+
+  if (key < node->val) {
+    node->left = insertHelper(node->left, key);
+  } else if (key > node->val) {
+    node->right = insertHelper(node->right, key);
+  }
+
+  return node;
+}
+
+/**
+ * @brief Remove a node from a binary search tree.
+ *
+ * @param node
+ * @param key
+ * @return BTreeNode*
+ */
+BTreeNode *BST::removeHelper(BTreeNode *node, const NodeVal &key) {
+  if (node == nullptr)
+    return nullptr;
+
+  if (key < node->val) {
+    node->left = removeHelper(node->left, key);
+  } else if (key > node->val) {
+    node->right = removeHelper(node->right, key);
+  } else {
+    // 找到要删除的节点
+    if (node->left == nullptr) {
+      //  case 1: 无左子树
+      BTreeNode *temp = node->right;
+      delete node;
+      return temp;
+    } else if (node->right == nullptr) {
+      // case 2: 无右子树
+      BTreeNode *temp = node->left;
+      delete node;
+      return temp;
+    } else {
+      // case 3: 有两个子节点
+      BTreeNode *temp = minNode(node->right);             // 找后继节点
+      node->val = temp->val;                              // 用后继节点的值替换
+      node->right = removeHelper(node->right, temp->val); // 删除后继节点
+      // 这里使用右子树中序后继节点的值替换当前节点的值，然后删除后继节点;
+      // 当然,也可以考虑用左子树的最大前驱替换,然后删除左子树的最大前驱
+      // BTreeNode *temp = maxNode(node->left);
+      // node->val = temp->val;
+      // node->left = removeHelper(node->left, temp->val);
+    }
+  }
+  return node;
+}
+
+/**
+ * @brief Search for a node in a binary search tree.
+ *
+ * @param node
+ * @param key TARGET KEY
+ * @return BTreeNode*
+ */
+BTreeNode *BST::searchHelper(BTreeNode *node, const NodeVal &key) const {
+  if (node == nullptr || node->val == key) {
+    return node;
+  }
+
+  if (key <= node->val) {
+    return searchHelper(node->left, key);
+  } else {
+    return searchHelper(node->right, key);
+  }
+}
+
+/**
+ * @brief Find the minimum node in a binary search tree.
+ *
+ * @param node
+ * @return BTreeNode*
+ */
+BTreeNode *BST::minNode(BTreeNode *node) const {
+  if (node == nullptr) {
+    return nullptr;
+  }
+
+  // 找最左边的节点就是最小的
+  BTreeNode *current = node;
+  while (current->left != nullptr) {
+    current = current->left;
+  }
+  return current;
+}
+
+/**
+ * @brief Find the maximum node in a binary search tree.
+ *
+ * @param node
+ * @return BTreeNode*
+ */
+BTreeNode *BST::maxNode(BTreeNode *node) const {
+  if (node == nullptr) {
+    return nullptr;
+  }
+
+  // 找最右边的节点就是最大的
+  BTreeNode *current = node;
+  while (current->right != nullptr) {
+    current = current->right;
+  }
+  return current;
+}
+
+/**
+ * @brief return the node value of successor corresponding to a given node in a
+ * binary search tree.
+ *
+ * @param val 目标结点值
+ * @return NodeVal
+ */
+NodeVal BST::successor(const NodeVal &val) const {
+  BTreeNode *current = searchHelper(root, val);
+  if (current == nullptr) {
+    throw std::runtime_error("Key value not found in the tree.");
+  }
+  if (current->right != nullptr) {
+    return minNode(current->right)->val;
+  } else {
+    // 方式一:由于没有右子树,所以需要从根节点开始向下搜索;
+    // 可以确定的是,后继节点一定是当前节点的某个祖先/父母节点.且在该节点的右侧(目标节点在后记节点左侧);
+    // 方式二:向上搜索祖先节点,在右翼最左侧的节点就是后继节点.会用到getParent函数,效率较低;
+    BTreeNode *successor = nullptr;
+    BTreeNode *ancestor = root;
+    while (ancestor != current) {
+      if (current->val <= ancestor->val) {
+        successor = ancestor; // so far this is the deepest node for which
+                              // current node is in left
+        ancestor = ancestor->left;
+      } else {
+        ancestor = ancestor->right;
+      }
+    }
+    if (successor == nullptr) {
+      throw std::runtime_error("No successor exists (it's the maximum node).");
+    }
+    return successor->val;
+  }
+}
+
+/**
+ * @brief return the node value of predecessor corresponding to a given node in
+ * a binary search tree.
+ *
+ * @param val
+ * @return NodeVal
+ */
+NodeVal BST::predecessor(const NodeVal &val) const {
+  BTreeNode *current = searchHelper(root, val);
+  if (current == nullptr) {
+    throw std::runtime_error("Key value not found in the tree.");
+  }
+  if (current->left != nullptr) {
+    return maxNode(current->left)->val;
+  } else {
+    // 方式一:由于没有左子树,所以需要从根节点开始向下搜索;
+    // 可以确定的是,前驱节点一定是当前节点的某个祖先/父母节点.且在该节点的左侧(目标节点在前驱节点右侧);
+    // 方式二:向上搜索祖先节点,在左翼最右侧的节点就是前驱节点.会用到getParent函数,效率较低;
+    BTreeNode *predecessor = nullptr;
+    BTreeNode *ancestor = root;
+    while (ancestor != current) {
+      if (current->val > ancestor->val) {
+        predecessor = ancestor; // so far this is the deepest node for which
+                                // current node is in right
+        ancestor = ancestor->right;
+      } else {
+        ancestor = ancestor->left;
+      }
+    }
+    if (predecessor == nullptr) {
+      throw std::runtime_error(
+          "No predecessor exists (it's the minimum node).");
+    }
+    return predecessor->val;
+  }
+}
+
+} // namespace binary_tree::binary_search_tree
+
+namespace trie_tree {
+std::shared_ptr<TrieNode> Trie::create_trie_node(char ch) {
+  return std::make_shared<TrieNode>(ch);
+}
+
+void Trie::remove(const std::string &word) { removeHelper(word); }
+
+void Trie::clear() { clearHelper(root_); }
+
+void Trie::removeHelper(const std::string &to_remove_word) {
+  if (to_remove_word.empty()) {
+    throw std::invalid_argument("Cannot remove an empty word.");
+  }
+
+  std::shared_ptr<TrieNode> current = root_;
+  std::vector<std::shared_ptr<TrieNode>> nodes_on_path;
+  nodes_on_path.emplace_back(root_);
+
+  for (char ch : to_remove_word) {
+    if (current->children_.find(ch) == current->children_.end()) {
+      throw std::runtime_error("Word not found in Trie.");
+    }
+    current = current->children_[ch];
+    nodes_on_path.emplace_back(current);
+  }
+
+  if (current->count_ == 0) {
+    throw std::runtime_error("Word not found in Trie.");
+  }
+
+  current->count_--;
+
+  // If the word is still present, no need to delete nodes
+  if (current->count_ > 0) {
+    return;
+  }
+
+  // Remove nodes if they are no longer needed
+  for (int i = nodes_on_path.size() - 1; i > 0; --i) {
+    char ch = to_remove_word[i - 1];
+    std::shared_ptr<TrieNode> parent = nodes_on_path[i - 1];
+    std::shared_ptr<TrieNode> child = nodes_on_path[i];
+
+    if (child->children_.empty() && child->count_ == 0) {
+      parent->children_.erase(ch);
+    } else {
+      break; // Stop if the node has other children or is the end of another
+             // word
+    }
+  }
+}
+
+std::vector<std::string> Trie::startsWith(const std::string &prefix) const {
+  std::vector<std::string> results;
+  std::shared_ptr<TrieNode> current = root_;
+
+  for (char ch : prefix) {
+    if (current->children_.find(ch) == current->children_.end()) {
+      return results;
+    }
+    current = current->children_.at(ch);
+  }
+  auto children = current->children_;
+  for (const auto &child_pair : children) {
+    std::string word = prefix + child_pair.first;
+    if (child_pair.second->count_ > 0) {
+      results.emplace_back(word);
+    }
+    // 递归查找所有以该前缀开头的单词
+    std::vector<std::string> sub_results = startsWith(word);
+    results.insert(results.end(), sub_results.begin(), sub_results.end());
+  }
+  return results;
+}
+
+void Trie::clearHelper(std::shared_ptr<TrieNode> node) {
+  if (node == nullptr)
+    return;
+
+  // 递归删除所有子节点
+  for (auto &[ch, child] : node->children_) {
+    clearHelper(child);
+  }
+
+  // 清空子节点映射
+  node->children_.clear();
+}
+
+std::shared_ptr<TrieNode> Trie::insertHelper(const std::string &word) {
+  std::shared_ptr<TrieNode> current = root_;
+  for (char ch : word) {
+    if (current->children_.find(ch) == current->children_.end()) {
+      current->children_[ch] = create_trie_node(ch);
+      current = current->children_[ch];
+    } else {
+      current = current->children_[ch];
+    }
+  }
+  current->count_++; // Increment the count for the complete word
+  return current;
+}
+
+void Trie::insert(const std::string &word) { insertHelper(word); }
+
+/**
+ * @brief Search a word in the Trie and return its occurrence count.
+ *
+ * @param word
+ * @return int occurrence count of the word in the Trie, 0 if not found.
+ */
+int Trie::search(const std::string &word) const {
+  return searchHelper(word) ? searchHelper(word)->count_ : 0;
+}
+
+std::shared_ptr<TrieNode> Trie::searchHelper(const std::string &word) const {
+  std::shared_ptr<TrieNode> current = root_;
+  for (char ch : word) {
+    if (current->children_.find(ch) == current->children_.end()) {
+      return nullptr;
+    }
+    current = current->children_.at(ch);
+  }
+  return current;
+}
+
+/**
+ * @brief Helper function for pre-order traversal of the Trie.
+ *
+ * @param curr_node
+ * @param word recorder of the current word formed by the path from root to the
+ * current node
+ * @param dictionary vector to store all words in the Trie in dictionary order
+ */
+void Trie::preOrderHelper(std::shared_ptr<TrieNode> curr_node, std::string word,
+                          std::vector<std::string> &dictionary) const {
+  if (curr_node == nullptr) {
+    throw std::runtime_error("Root node is null.");
+  }
+
+  if (curr_node != root_) {
+    word.push_back(curr_node->data_);
+    if (curr_node->count_ > 0) {
+      dictionary.emplace_back(word);
+    }
+  }
+
+  for (const auto &child_pair : curr_node->children_) {
+    preOrderHelper(child_pair.second, word, dictionary);
+  }
+}
+
+/**
+ * @brief Pre-order traversal of the Trie to display all words in dictionary
+ * order.
+ *
+ */
+void Trie::preOrder() const {
+  std::vector<std::string> dictionary;
+  preOrderHelper(root_, "", dictionary);
+  std::cout << "Trie Pre-order Traversal (Dictionary):" << std::endl;
+  for (const auto &word : dictionary) {
+    std::cout << word << std::endl;
+  }
+}
+} // namespace trie_tree
 
 namespace red_black_tree {
 template <typename Key, typename Value>

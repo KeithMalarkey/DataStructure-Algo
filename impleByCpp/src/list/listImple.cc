@@ -80,7 +80,7 @@ LinkList &create_list_with_tailinsert(const std::vector<NodeVal> &vals) {
   LinkList *list = new LinkList();
   if (list == nullptr) {
     std::cout << "memory allocation failure\n";
-    std::exit(EXIT_FAILURE);
+    throw std::bad_alloc();
   }
   for (auto val : vals) {
     insert_on_tail(*list, val);

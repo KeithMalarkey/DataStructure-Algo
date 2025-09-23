@@ -10,554 +10,8 @@
 
 // * 邻接表可以表示无向图和有向图,但由于无向图的邻接表表示占用较大的内存空间,因此在此仅使用邻接矩阵表示无向图
 // * 同时,给出了有向图和无向图的邻接矩阵表示
-using namespace common_graph_utils;
-using namespace directed_graph_utils;
 
-// --------------------- Graph Utils Implementation ------------------
-/**
- * @brief probe whether a cycle exists in the graph using DFS.
- *
- * @param current
- * @return true has cycle
- * @return false no cycle
- */
-bool Graph::isCyclicDFS(const VertexType &current) {
-  int currentIdx = position(current);
-  if (currentIdx == -1) {
-    std::cout << "Vertex " << current << " is not in the graph." << std::endl;
-    std::exit(EXIT_FAILURE);
-  }
-
-  // if current vertex is already in the recursion stack,
-  // it means we find a cycle
-  if (recStack[currentIdx]) {
-    // find the start position of the cycle in the current path
-    auto it = std::find(path.begin(), path.end(), current);
-    if (it != path.end()) {
-      std::vector<VertexType> cycle(it, path.end());
-      cycle.push_back(current); // 闭合环
-      cycles.push_back(cycle);
-    }
-    return true;
-  }
-
-  // if the vertex is already visited and not in the recursion stack
-  if (visited[currentIdx]) {
-    return false;
-  }
-
-  // tag the vertex as visited and push it into the recursion stack
-  visited[currentIdx] = true;
-  recStack[currentIdx] = true;
-  path.push_back(current);
-
-  bool hasCycle = false;
-
-  // visit all neighbors of current vertex
-  AdjListNode *neighbor = _vertexList[currentIdx]._firstEdge;
-  while (neighbor != nullptr) {
-    if (isCyclicDFS(neighbor->_vertex)) {
-      hasCycle = true;
-    }
-    neighbor = neighbor->_next;
-  }
-
-  // remove the vertex from the recursion stack and path
-  recStack[currentIdx] = false;
-  path.pop_back();
-
-  return hasCycle;
-}
-
-/**
- * @brief Construct a new Adj List Node.
- *
- * @param vertex
- * @param weight
- */
-AdjListNode::AdjListNode(const VertexType &vertex, const EdgeType &weight)
-    : _vertex(vertex), _weight(weight), _next(nullptr) {}
-
-int Matrix::find(std::vector<int> &parent, int vertexIdx) {
-  if (parent[vertexIdx] == vertexIdx) {
-    return vertexIdx;
-  }
-  return find(parent, parent[vertexIdx]);
-}
-
-/**
- * @brief Union-Find algorithm for finding the root of a vertex.
- *
- * @param parent
- * @param vertex1
- * @param vertex2
- * @param check
- */
-void Matrix::unionSet(std::vector<int> &parent, int vertex1, int vertex2,
-                      bool check = false) {
-  int rootX = find(parent, vertex1);
-  int rootY = find(parent, vertex2);
-  if (rootX != rootY) {
-    parent[rootY] = rootX;
-    if (check) {
-      _connectedComponentNum--;
-    }
-  }
-}
-// ------------------- Matrix (for both directed and undirected graph)
-/**
- * @brief 确定连通分量
- *
- * @return void
- */
-void Matrix::connectedComponent() {
-  auto cmp = [](const Edge &a, const Edge &b) { return a._weight < b._weight; };
-  std::set<Edge, decltype(cmp)> edges;
-  for (int i = 0; i < _numOfVertices; i++) {
-    for (int j = 0; j < _numOfVertices; j++) {
-      if (_matrix[i][j] > 0) {
-        edges.insert({i, j, _matrix[i][j]});
-      }
-    }
-  }
-
-  std::vector<int> parent(_numOfVertices);
-  for (int i = 0; i < _numOfVertices; i++) {
-    parent[i] = i;
-  }
-
-  std::vector<Edge> mstEdges;
-  int weight = 0;
-  for (const auto &edge : edges) {
-    int rootSrc = find(parent, edge._src);
-    int rootDest = find(parent, edge._dest);
-    if (rootSrc != rootDest) {
-      // add the edge to the MST
-      mstEdges.push_back(edge);
-      weight += edge._weight;
-      unionSet(parent, edge._src, edge._dest, true);
-    }
-  }
-}
-
-/**
- * @brief Minimum Spanning Tree (MST) using Kruskal's algorithm.
- * 最小生成树算法Krusaal,特点:
- *    - 只适用于边稀疏无向图(稀疏图)
- *    - 连通分量一定为1,否则为生成森林
- *    - 时间复杂度: O(E log E)
- *    - 最小生成树可能不唯一,原因: 边的权值相同,无法确定唯一的生成树
- * @note 必须先确定连通分量是1,否则无法确定唯一的生成树
- * @return std::pair<std::vector<Edge>, int>
- */
-std::pair<std::vector<Edge>, int> Matrix::MinimumSpanningTreeKruskal() {
-  assert(_connectedComponentNum == 1 &&
-         "The graph must be connected for Kruskal's algorithm.");
-  std::cout << "Minimum Spanning Tree (MST) using Kruskal's algorithm:"
-            << std::endl;
-  // 1. initialize edge weight set and sort it by weight
-  auto cmp = [](const Edge &a, const Edge &b) { return a._weight < b._weight; };
-  std::set<Edge, decltype(cmp)> edges;
-  for (int i = 0; i < _numOfVertices; i++) {
-    for (int j = 0; j < _numOfVertices; j++) {
-      if (_matrix[i][j] > 0) {
-        edges.insert({i, j, _matrix[i][j]});
-      }
-    }
-  }
-
-  // 2. initialize parent array for Union-Find algorithm
-  std::vector<int> parent(_numOfVertices);
-  for (int i = 0; i < _numOfVertices; i++) {
-    parent[i] = i;
-  }
-
-  // 3. iterate over edges and add them to the MST if they do not form a cycle
-  std::vector<Edge> mstEdges;
-  int weight = 0;
-  for (const auto &edge : edges) {
-    int rootSrc = find(parent, edge._src);
-    int rootDest = find(parent, edge._dest);
-    if (rootSrc != rootDest) {
-      // add the edge to the MST
-      mstEdges.push_back(edge);
-      weight += edge._weight;
-      unionSet(parent, edge._src, edge._dest);
-    }
-  }
-  return std::pair<std::vector<Edge>, int>(mstEdges, weight);
-}
-
-/**
- * @brief 打印最小生成树,可以是kru/prim/boruvka算法的输出
- *
- * @param mstEdges
- */
-void Matrix::printMST(const std::pair<std::vector<Edge>, int> &mstEdges) {
-  std::cout << "Edges in the MST:" << std::endl;
-  for (const auto &edge : mstEdges.first) {
-    std::cout << "(" << edge._src << ", " << edge._dest << ") - ["
-              << _vertexList[edge._src] << " --- " << _vertexList[edge._dest]
-              << "] - weight: " << edge._weight << std::endl;
-  }
-
-  std::cout << "Total weight: " << mstEdges.second << std::endl;
-}
-
-/**
- * @brief Construct a new Matrix (Constructor)
- *
- * @param isDirected 有向/无向?
- * @param compacted 压缩存储? 如果压缩存储则使用下三角矩阵,否则使用全矩阵
- * @param numOfVertices 顶点数
- * @param numOfEdges 边数
- */
-Matrix::Matrix(bool isDirected, bool compacted, unsigned int numOfVertices,
-               unsigned int numOfEdges)
-    : _isDirected(isDirected), _compacted(compacted),
-      _numOfVertices(numOfVertices), _numOfEdges(numOfEdges),
-      _connectedComponentNum(numOfVertices) {
-  _vertexList.resize(_numOfVertices, NULL_VERTEX);
-  _matrix.resize(_numOfVertices, std::vector<EdgeType>(_numOfVertices, 0));
-}
-
-/**
- * @brief Destroy the Matrix (Destructor)
- *
- */
-Matrix::~Matrix() {
-  std::cout << "Adjacency Matrix is destroyed." << std::endl;
-  _vertexList.clear();
-  _matrix.clear();
-}
-
-void Matrix::initMatrix(
-    std::vector<VertexType> &vertexList,
-    std::map<std::pair<VertexType, VertexType>, EdgeType> &edgeList) {
-  initVertex(vertexList);
-  if (edgeList.size() != _numOfEdges) {
-    std::cout << "Wrong number of edges in the input." << std::endl;
-    return;
-  }
-  for (auto it = edgeList.begin(); it != edgeList.end(); it++) {
-    initEdge(it->first.first, it->first.second, it->second);
-  }
-  _edgeList = edgeList;
-  std::cout << "Adjacency Matrix is initialized." << std::endl;
-}
-
-void Matrix::initEdge(const VertexType &src, const VertexType &dest,
-                      const EdgeType &weight) {
-  int srcIdx = position(src);
-  int destIdx = position(dest);
-  if (srcIdx == -1 || destIdx == -1) {
-    std::cout << "No such vertex in the graph." << std::endl;
-    return; // ensure both vertices are in the graph
-  }
-  if (_isDirected) {
-    _matrix[srcIdx][destIdx] = weight;
-  } else {
-    if (_compacted) {
-      srcIdx > destIdx ? _matrix[srcIdx][destIdx] = weight
-                       : _matrix[destIdx][srcIdx] = weight;
-    } else {
-      _matrix[srcIdx][destIdx] = weight;
-      _matrix[destIdx][srcIdx] = weight;
-    }
-  }
-}
-
-void Matrix::initVertex(const std::vector<VertexType> &vertexList) {
-  if (vertexList.empty()) {
-    return;
-  }
-  if (vertexList.size() != _numOfVertices) {
-    std::cout << "Invalid input for initializing the graph." << std::endl;
-    return;
-  }
-  _vertexList = vertexList;
-}
-
-/**
- * @brief position of the given vertex in the vertex list.
- *
- * @param vertex
- * @return int
- */
-int Matrix::position(const VertexType &vertex) {
-  auto it = std::find(_vertexList.begin(), _vertexList.end(), vertex);
-  if (it != _vertexList.end()) {
-    return std::distance(_vertexList.begin(), it);
-  }
-  return -1;
-}
-
-/**
- * @brief Check if the given edge is in the graph.
- *
- * @param src
- * @param dest
- * @return true
- * @return false
- */
-bool Matrix::isEdge(const VertexType &src, const VertexType &dest) {
-  if (!isVertex(src) || !isVertex(dest)) {
-    return false;
-  }
-  return _isDirected ? _matrix[position(src)][position(dest)] != 0
-                     : _matrix[position(src)][position(dest)] != 0 ||
-                           _matrix[position(dest)][position(src)] != 0;
-}
-
-/**
- * @brief Check if the given vertex is in the graph.
- *
- * @param vertex
- * @return true
- * @return false
- */
-bool Matrix::isVertex(const VertexType &vertex) {
-  return position(vertex) != -1;
-}
-
-/**
- * @brief indegree of the given vertex.
- *
- * @param vertex
- * @return int
- */
-int Matrix::indegree(const VertexType &vertex) {
-  int idx = position(vertex);
-  if (idx == -1) {
-    return -1;
-  }
-  int count = 0;
-  for (int i = 0; i < _numOfVertices; i++) {
-    if (_matrix[i][idx] > 0) {
-      count++;
-    }
-  }
-  // compacted matrix for undirected graph
-  if (_compacted) {
-    for (int j = 0; j < _numOfVertices; j++) {
-      if (_matrix[idx][j] > 0) {
-        count++;
-      }
-    }
-  }
-  return count;
-}
-
-/**
- * @brief outdegree of the given vertex.
- *
- * @param vertex
- * @return int
- */
-int Matrix::outdegree(const VertexType &vertex) {
-  int idx = position(vertex);
-  if (idx == -1) {
-    return -1;
-  }
-  int count = 0;
-  for (int i = 0; i < _numOfVertices; i++) {
-    if (_matrix[idx][i] > 0) {
-      count++;
-    }
-  }
-  // compacted matrix for undirected graph
-  if (_compacted) {
-    for (int j = 0; j < _numOfVertices; j++) {
-      if (_matrix[j][idx] > 0) {
-        count++;
-      }
-    }
-  }
-  return count;
-}
-
-/**
- * @brief Get the degree of the given vertex.
- *
- * @param vertex
- * @return int
- */
-int Matrix::degree(const VertexType &vertex) {
-  return _isDirected ? indegree(vertex) + outdegree(vertex) : outdegree(vertex);
-}
-
-/**
- * @brief add a vertex to the graph.
- *
- * @param vertex
- */
-void Matrix::addVertex(const VertexType &vertex) {
-  if (isVertex(vertex)) {
-    return; // vertex already in the graph
-  }
-  _vertexList.push_back(vertex);
-  _matrix.push_back(std::vector<EdgeType>(_numOfVertices, 0));
-  _numOfVertices++;
-}
-
-/**
- * @brief delete a vertex from the graph.
- *
- * @param vertex
- */
-void Matrix::deleteVertex(const VertexType &vertex) {
-  if (!isVertex(vertex)) {
-    return; // vertex not in the graph
-  }
-  int idx = position(vertex);
-  _vertexList.erase(_vertexList.begin() + idx);
-  for (int i = 0; i < _numOfVertices; i++) {
-    _matrix[i].erase(_matrix[i].begin() + idx);
-  }
-  _numOfVertices--;
-}
-
-/**
- * @brief init edge with the given weight.
- *
- * @param src
- * @param dest
- * @param weight
- */
-void Matrix::addEdge(const VertexType &src, const VertexType &dest,
-                     const EdgeType &weight) {
-  int srcIdx = position(src);
-  int destIdx = position(dest);
-  if (srcIdx == -1 || destIdx == -1) {
-    return; // ensure both vertices are in the graph
-  }
-  if (!isEdge(src, dest)) {
-    if (_isDirected) {
-      _matrix[srcIdx][destIdx] = weight;
-    } else {
-      if (_compacted) {
-        srcIdx > destIdx ? _matrix[srcIdx][destIdx] = weight
-                         : _matrix[destIdx][srcIdx] = weight;
-      } else {
-        _matrix[srcIdx][destIdx] = weight;
-        _matrix[destIdx][srcIdx] = weight;
-      }
-    }
-    _edgeList[std::make_pair(src, dest)] = weight;
-    _numOfEdges++;
-  }
-}
-
-/**
- * @brief delete an edge from the graph.
- *
- * @param src
- * @param dest
- */
-void Matrix::deleteEdge(const VertexType &src, const VertexType &dest) {
-  int srcIdx = position(src);
-  int destIdx = position(dest);
-  if (srcIdx == -1 || destIdx == -1) {
-    return; // ensure both vertices are in the graph
-  }
-  if (isEdge(src, dest)) {
-    if (_isDirected) {
-      _matrix[srcIdx][destIdx] = 0;
-    } else {
-      _matrix[srcIdx][destIdx] = 0;
-      _matrix[destIdx][srcIdx] = 0;
-    }
-    _edgeList.erase(std::make_pair(src, dest));
-    _numOfEdges--;
-  }
-}
-
-void Matrix::DFS(const VertexType &start) {
-  assert(!_isDirected && "Just for undirected graph");
-  int startIdx = position(start);
-  if (startIdx == -1) {
-    std::cout << "Vertex " << start << " is not in the graph." << std::endl;
-    return;
-  }
-
-  std::stack<int> stack;
-  std::vector<bool> visited(_numOfVertices, false);
-  stack.push(startIdx);
-  visited[startIdx] = true;
-  std::cout << start << " -> ";
-
-  while (!stack.empty()) {
-    int currIdx = stack.top();
-    stack.pop();
-
-    for (int neighborIdx = 0; neighborIdx < _numOfVertices; neighborIdx++) {
-      if (_matrix[currIdx][neighborIdx] != 0 && !visited[neighborIdx]) {
-        visited[neighborIdx] = true;
-        std::cout << _vertexList[neighborIdx] << " -> ";
-        stack.push(neighborIdx);
-      }
-    }
-  }
-  std::cout << "null" << std::endl;
-}
-
-std::vector<VertexType> Matrix::getAdjacentVertices(const VertexType &vertex) {
-  if (!isVertex(vertex)) {
-    return std::vector<VertexType>();
-  }
-  std::vector<VertexType> adjVertices;
-  int idx = position(vertex);
-  for (int i = 0; i < _numOfVertices; i++) {
-    if (_matrix[idx][i] > 0) {
-      adjVertices.push_back(_vertexList[i]);
-    }
-  }
-  return adjVertices;
-}
-
-/**
- * @brief get the weight of an edge in the graph.
- *
- * @param src source vertex
- * @param dest destination vertex
- * @return EdgeType weight of the edge
- */
-EdgeType Matrix::getEdgeWeight(const VertexType &src, const VertexType &dest) {
-  int srcIdx = position(src);
-  int destIdx = position(dest);
-  if (srcIdx == -1 || destIdx == -1) {
-    return -1;
-  }
-  return _compacted ? _matrix[srcIdx][destIdx] + _matrix[destIdx][srcIdx]
-                    : _matrix[srcIdx][destIdx];
-}
-
-/**
- * @brief print the adjacency matrix of the graph and its properties.
- *
- */
-void Matrix::printMatrix() {
-  std::cout << "Adjacency Matrix info:" << std::endl;
-  std::cout << "\tVertices: " << _numOfVertices << std::endl;
-  std::cout << "\tEdges: " << _numOfEdges << std::endl;
-  std::cout << "\tDirected: " << _isDirected << std::endl;
-  std::cout << "\tCompacted: " << _compacted << std::endl;
-  std::cout << "Matrix:" << std::endl;
-  std::cout << "  ";
-  std::for_each(_vertexList.begin(), _vertexList.end(),
-                [](VertexType v) { std::cout << v << " "; });
-
-  std::cout << std::endl;
-  for (int i = 0; i < _numOfVertices; i++) {
-    std::cout << _vertexList[i] << " ";
-    for (int j = 0; j < _numOfVertices; j++) {
-      std::cout << _matrix[i][j] << " ";
-    }
-    std::cout << std::endl;
-  }
-}
-
-// --------------------- Directed Graph ------------------
+namespace directed_graph_utils {
 /**
  * @brief Construct a new Graph:: Graph object
  * note: adjcent list is implemented as a linked list, and vertex node is
@@ -1104,6 +558,12 @@ bool Graph::BFS(const VertexType &startVertex) {
   return true;
 }
 
+/**
+ * @brief A utility function to perform DFS and fill the stack with vertices
+ * 
+ * @param v 
+ * @param stack 
+ */
 void Graph::fillOrder(VertexType v, std::stack<VertexType> &stack) {
   int vIdx = position(v);
   if (vIdx == -1)
@@ -1179,5 +639,567 @@ int Graph::getConnectedComponentNum() {
   return Kosaraju_StronglyConnectedComponents().size();
 }
 
-// TODO
-// int shortestPath(const VertexType &src, const VertexType &dest) {}
+/**
+ * @brief probe whether a cycle exists in the graph using DFS.
+ *
+ * @param current
+ * @return true has cycle
+ * @return false no cycle
+ */
+bool Graph::isCyclicDFS(const VertexType &current) {
+  int currentIdx = position(current);
+  if (currentIdx == -1) {
+    throw std::invalid_argument("Vertex is not in the graph.");
+  }
+
+  // if current vertex is already in the recursion stack,
+  // it means we find a cycle
+  if (recStack[currentIdx]) {
+    // find the start position of the cycle in the current path
+    auto it = std::find(path.begin(), path.end(), current);
+    if (it != path.end()) {
+      std::vector<VertexType> cycle(it, path.end());
+      cycle.push_back(current); // 闭合环
+      cycles.push_back(cycle);
+    }
+    return true;
+  }
+
+  // if the vertex is already visited and not in the recursion stack
+  if (visited[currentIdx]) {
+    return false;
+  }
+
+  // tag the vertex as visited and push it into the recursion stack
+  visited[currentIdx] = true;
+  recStack[currentIdx] = true;
+  path.push_back(current);
+
+  bool hasCycle = false;
+
+  // visit all neighbors of current vertex
+  AdjListNode *neighbor = _vertexList[currentIdx]._firstEdge;
+  while (neighbor != nullptr) {
+    if (isCyclicDFS(neighbor->_vertex)) {
+      hasCycle = true;
+    }
+    neighbor = neighbor->_next;
+  }
+
+  // remove the vertex from the recursion stack and path
+  recStack[currentIdx] = false;
+  path.pop_back();
+
+  return hasCycle;
+}
+
+void Graph::topologicalSort() {
+  assert(!is_cyclic() && "Graph contains a cycle, topological sort not possible.");
+  std::stack<VertexType> stack;
+  visited.assign(_numOfVertices, false);
+
+  for (int i = 0; i < _numOfVertices; i++) {
+    if (!visited[i]) {
+      fillOrder(_vertexList[i]._vertex, stack);
+    }
+  }
+
+  std::cout << "Topological Sort: ";
+  while (!stack.empty()) {
+    std::cout << stack.top() << " ";
+    stack.pop();
+  }
+  std::cout << std::endl;
+}
+
+/**
+ * @brief Construct a new Adj List Node.
+ *
+ * @param vertex
+ * @param weight
+ */
+AdjListNode::AdjListNode(const VertexType &vertex, const EdgeType &weight)
+    : _vertex(vertex), _weight(weight), _next(nullptr) {}
+} // namespace directed_graph_utils
+
+namespace common_graph_utils {
+
+int Matrix::find(std::vector<int> &parent, int vertexIdx) {
+  if (parent[vertexIdx] == vertexIdx) {
+    return vertexIdx;
+  }
+  return find(parent, parent[vertexIdx]);
+}
+
+/**
+ * @brief Union-Find algorithm for finding the root of a vertex.
+ *
+ * @param parent
+ * @param vertex1
+ * @param vertex2
+ * @param check
+ */
+void Matrix::unionSet(std::vector<int> &parent, int vertex1, int vertex2,
+                      bool check = false) {
+  int rootX = find(parent, vertex1);
+  int rootY = find(parent, vertex2);
+  if (rootX != rootY) {
+    parent[rootY] = rootX;
+    if (check) {
+      _connectedComponentNum--;
+    }
+  }
+}
+
+/**
+ * @brief 确定连通分量
+ *
+ * @return void
+ */
+void Matrix::connectedComponent() {
+  auto cmp = [](const Edge &a, const Edge &b) { return a._weight < b._weight; };
+  std::set<Edge, decltype(cmp)> edges;
+  for (int i = 0; i < _numOfVertices; i++) {
+    for (int j = 0; j < _numOfVertices; j++) {
+      if (_matrix[i][j] > 0) {
+        edges.insert({i, j, _matrix[i][j]});
+      }
+    }
+  }
+
+  std::vector<int> parent(_numOfVertices);
+  for (int i = 0; i < _numOfVertices; i++) {
+    parent[i] = i;
+  }
+
+  std::vector<Edge> mstEdges;
+  int weight = 0;
+  for (const auto &edge : edges) {
+    int rootSrc = find(parent, edge._src);
+    int rootDest = find(parent, edge._dest);
+    if (rootSrc != rootDest) {
+      // add the edge to the MST
+      mstEdges.push_back(edge);
+      weight += edge._weight;
+      unionSet(parent, edge._src, edge._dest, true);
+    }
+  }
+}
+
+/**
+ * @brief Minimum Spanning Tree (MST) using Kruskal's algorithm.
+ * 最小生成树算法Krusaal,特点:
+ *    - 只适用于边稀疏无向图(稀疏图)
+ *    - 连通分量一定为1,否则为生成森林
+ *    - 时间复杂度: O(E log E)
+ *    - 最小生成树可能不唯一,原因: 边的权值相同,无法确定唯一的生成树
+ * @note 必须先确定连通分量是1,否则无法确定唯一的生成树
+ * @return std::pair<std::vector<Edge>, int>
+ */
+std::pair<std::vector<Edge>, int> Matrix::MinimumSpanningTreeKruskal() {
+  assert(_connectedComponentNum == 1 &&
+         "The graph must be connected for Kruskal's algorithm.");
+  std::cout << "Minimum Spanning Tree (MST) using Kruskal's algorithm:"
+            << std::endl;
+  // 1. initialize edge weight set and sort it by weight
+  auto cmp = [](const Edge &a, const Edge &b) { return a._weight < b._weight; };
+  std::set<Edge, decltype(cmp)> edges;
+  for (int i = 0; i < _numOfVertices; i++) {
+    for (int j = 0; j < _numOfVertices; j++) {
+      if (_matrix[i][j] > 0) {
+        edges.insert({i, j, _matrix[i][j]});
+      }
+    }
+  }
+
+  // 2. initialize parent array for Union-Find algorithm
+  std::vector<int> parent(_numOfVertices);
+  for (int i = 0; i < _numOfVertices; i++) {
+    parent[i] = i;
+  }
+
+  // 3. iterate over edges and add them to the MST if they do not form a cycle
+  std::vector<Edge> mstEdges;
+  int weight = 0;
+  for (const auto &edge : edges) {
+    int rootSrc = find(parent, edge._src);
+    int rootDest = find(parent, edge._dest);
+    if (rootSrc != rootDest) {
+      // add the edge to the MST
+      mstEdges.push_back(edge);
+      weight += edge._weight;
+      unionSet(parent, edge._src, edge._dest);
+    }
+  }
+  return std::pair<std::vector<Edge>, int>(mstEdges, weight);
+}
+
+/**
+ * @brief 打印最小生成树,可以是kru/prim/boruvka算法的输出
+ *
+ * @param mstEdges
+ */
+void Matrix::printMST(const std::pair<std::vector<Edge>, int> &mstEdges) {
+  std::cout << "Edges in the MST:" << std::endl;
+  for (const auto &edge : mstEdges.first) {
+    std::cout << "(" << edge._src << ", " << edge._dest << ") - ["
+              << _vertexList[edge._src] << " --- " << _vertexList[edge._dest]
+              << "] - weight: " << edge._weight << std::endl;
+  }
+
+  std::cout << "Total weight: " << mstEdges.second << std::endl;
+}
+
+/**
+ * @brief Construct a new Matrix (Constructor)
+ *
+ * @param isDirected 有向/无向?
+ * @param compacted 压缩存储? 如果压缩存储则使用下三角矩阵,否则使用全矩阵
+ * @param numOfVertices 顶点数
+ * @param numOfEdges 边数
+ */
+Matrix::Matrix(bool isDirected, bool compacted, unsigned int numOfVertices,
+               unsigned int numOfEdges)
+    : _isDirected(isDirected), _compacted(compacted),
+      _numOfVertices(numOfVertices), _numOfEdges(numOfEdges),
+      _connectedComponentNum(numOfVertices) {
+  _vertexList.resize(_numOfVertices, NULL_VERTEX);
+  _matrix.resize(_numOfVertices, std::vector<EdgeType>(_numOfVertices, 0));
+}
+
+/**
+ * @brief Destroy the Matrix (Destructor)
+ *
+ */
+Matrix::~Matrix() {
+  std::cout << "Adjacency Matrix is destroyed." << std::endl;
+  _vertexList.clear();
+  _matrix.clear();
+}
+
+void Matrix::initMatrix(
+    std::vector<VertexType> &vertexList,
+    std::map<std::pair<VertexType, VertexType>, EdgeType> &edgeList) {
+  initVertex(vertexList);
+  if (edgeList.size() != _numOfEdges) {
+    std::cout << "Wrong number of edges in the input." << std::endl;
+    return;
+  }
+  for (auto it = edgeList.begin(); it != edgeList.end(); it++) {
+    initEdge(it->first.first, it->first.second, it->second);
+  }
+  _edgeList = edgeList;
+  std::cout << "Adjacency Matrix is initialized." << std::endl;
+}
+
+void Matrix::initEdge(const VertexType &src, const VertexType &dest,
+                      const EdgeType &weight) {
+  int srcIdx = position(src);
+  int destIdx = position(dest);
+  if (srcIdx == -1 || destIdx == -1) {
+    std::cout << "No such vertex in the graph." << std::endl;
+    return; // ensure both vertices are in the graph
+  }
+  if (_isDirected) {
+    _matrix[srcIdx][destIdx] = weight;
+  } else {
+    if (_compacted) {
+      srcIdx > destIdx ? _matrix[srcIdx][destIdx] = weight
+                       : _matrix[destIdx][srcIdx] = weight;
+    } else {
+      _matrix[srcIdx][destIdx] = weight;
+      _matrix[destIdx][srcIdx] = weight;
+    }
+  }
+}
+
+void Matrix::initVertex(const std::vector<VertexType> &vertexList) {
+  if (vertexList.empty()) {
+    return;
+  }
+  if (vertexList.size() != _numOfVertices) {
+    std::cout << "Invalid input for initializing the graph." << std::endl;
+    return;
+  }
+  _vertexList = vertexList;
+}
+
+/**
+ * @brief position of the given vertex in the vertex list.
+ *
+ * @param vertex
+ * @return int
+ */
+int Matrix::position(const VertexType &vertex) {
+  auto it = std::find(_vertexList.begin(), _vertexList.end(), vertex);
+  if (it != _vertexList.end()) {
+    return std::distance(_vertexList.begin(), it);
+  }
+  return -1;
+}
+
+/**
+ * @brief Check if the given edge is in the graph.
+ *
+ * @param src
+ * @param dest
+ * @return true
+ * @return false
+ */
+bool Matrix::isEdge(const VertexType &src, const VertexType &dest) {
+  if (!isVertex(src) || !isVertex(dest)) {
+    return false;
+  }
+  return _isDirected ? _matrix[position(src)][position(dest)] != 0
+                     : _matrix[position(src)][position(dest)] != 0 ||
+                           _matrix[position(dest)][position(src)] != 0;
+}
+
+/**
+ * @brief Check if the given vertex is in the graph.
+ *
+ * @param vertex
+ * @return true
+ * @return false
+ */
+bool Matrix::isVertex(const VertexType &vertex) {
+  return position(vertex) != -1;
+}
+
+/**
+ * @brief indegree of the given vertex.
+ *
+ * @param vertex
+ * @return int
+ */
+int Matrix::indegree(const VertexType &vertex) {
+  int idx = position(vertex);
+  if (idx == -1) {
+    return -1;
+  }
+  int count = 0;
+  for (int i = 0; i < _numOfVertices; i++) {
+    if (_matrix[i][idx] > 0) {
+      count++;
+    }
+  }
+  // compacted matrix for undirected graph
+  if (_compacted) {
+    for (int j = 0; j < _numOfVertices; j++) {
+      if (_matrix[idx][j] > 0) {
+        count++;
+      }
+    }
+  }
+  return count;
+}
+
+/**
+ * @brief outdegree of the given vertex.
+ *
+ * @param vertex
+ * @return int
+ */
+int Matrix::outdegree(const VertexType &vertex) {
+  int idx = position(vertex);
+  if (idx == -1) {
+    return -1;
+  }
+  int count = 0;
+  for (int i = 0; i < _numOfVertices; i++) {
+    if (_matrix[idx][i] > 0) {
+      count++;
+    }
+  }
+  // compacted matrix for undirected graph
+  if (_compacted) {
+    for (int j = 0; j < _numOfVertices; j++) {
+      if (_matrix[j][idx] > 0) {
+        count++;
+      }
+    }
+  }
+  return count;
+}
+
+/**
+ * @brief Get the degree of the given vertex.
+ *
+ * @param vertex
+ * @return int
+ */
+int Matrix::degree(const VertexType &vertex) {
+  return _isDirected ? indegree(vertex) + outdegree(vertex) : outdegree(vertex);
+}
+
+/**
+ * @brief add a vertex to the graph.
+ *
+ * @param vertex
+ */
+void Matrix::addVertex(const VertexType &vertex) {
+  if (isVertex(vertex)) {
+    return; // vertex already in the graph
+  }
+  _vertexList.push_back(vertex);
+  _matrix.push_back(std::vector<EdgeType>(_numOfVertices, 0));
+  _numOfVertices++;
+}
+
+/**
+ * @brief delete a vertex from the graph.
+ *
+ * @param vertex
+ */
+void Matrix::deleteVertex(const VertexType &vertex) {
+  if (!isVertex(vertex)) {
+    return; // vertex not in the graph
+  }
+  int idx = position(vertex);
+  _vertexList.erase(_vertexList.begin() + idx);
+  for (int i = 0; i < _numOfVertices; i++) {
+    _matrix[i].erase(_matrix[i].begin() + idx);
+  }
+  _numOfVertices--;
+}
+
+/**
+ * @brief init edge with the given weight.
+ *
+ * @param src
+ * @param dest
+ * @param weight
+ */
+void Matrix::addEdge(const VertexType &src, const VertexType &dest,
+                     const EdgeType &weight) {
+  int srcIdx = position(src);
+  int destIdx = position(dest);
+  if (srcIdx == -1 || destIdx == -1) {
+    return; // ensure both vertices are in the graph
+  }
+  if (!isEdge(src, dest)) {
+    if (_isDirected) {
+      _matrix[srcIdx][destIdx] = weight;
+    } else {
+      if (_compacted) {
+        srcIdx > destIdx ? _matrix[srcIdx][destIdx] = weight
+                         : _matrix[destIdx][srcIdx] = weight;
+      } else {
+        _matrix[srcIdx][destIdx] = weight;
+        _matrix[destIdx][srcIdx] = weight;
+      }
+    }
+    _edgeList[std::make_pair(src, dest)] = weight;
+    _numOfEdges++;
+  }
+}
+
+/**
+ * @brief delete an edge from the graph.
+ *
+ * @param src
+ * @param dest
+ */
+void Matrix::deleteEdge(const VertexType &src, const VertexType &dest) {
+  int srcIdx = position(src);
+  int destIdx = position(dest);
+  if (srcIdx == -1 || destIdx == -1) {
+    return; // ensure both vertices are in the graph
+  }
+  if (isEdge(src, dest)) {
+    if (_isDirected) {
+      _matrix[srcIdx][destIdx] = 0;
+    } else {
+      _matrix[srcIdx][destIdx] = 0;
+      _matrix[destIdx][srcIdx] = 0;
+    }
+    _edgeList.erase(std::make_pair(src, dest));
+    _numOfEdges--;
+  }
+}
+
+void Matrix::DFS(const VertexType &start) {
+  assert(!_isDirected && "Just for undirected graph");
+  int startIdx = position(start);
+  if (startIdx == -1) {
+    std::cout << "Vertex " << start << " is not in the graph." << std::endl;
+    return;
+  }
+
+  std::stack<int> stack;
+  std::vector<bool> visited(_numOfVertices, false);
+  stack.push(startIdx);
+  visited[startIdx] = true;
+  std::cout << start << " -> ";
+
+  while (!stack.empty()) {
+    int currIdx = stack.top();
+    stack.pop();
+
+    for (int neighborIdx = 0; neighborIdx < _numOfVertices; neighborIdx++) {
+      if (_matrix[currIdx][neighborIdx] != 0 && !visited[neighborIdx]) {
+        visited[neighborIdx] = true;
+        std::cout << _vertexList[neighborIdx] << " -> ";
+        stack.push(neighborIdx);
+      }
+    }
+  }
+  std::cout << "null" << std::endl;
+}
+
+std::vector<VertexType> Matrix::getAdjacentVertices(const VertexType &vertex) {
+  if (!isVertex(vertex)) {
+    return std::vector<VertexType>();
+  }
+  std::vector<VertexType> adjVertices;
+  int idx = position(vertex);
+  for (int i = 0; i < _numOfVertices; i++) {
+    if (_matrix[idx][i] > 0) {
+      adjVertices.push_back(_vertexList[i]);
+    }
+  }
+  return adjVertices;
+}
+
+/**
+ * @brief get the weight of an edge in the graph.
+ *
+ * @param src source vertex
+ * @param dest destination vertex
+ * @return EdgeType weight of the edge
+ */
+EdgeType Matrix::getEdgeWeight(const VertexType &src, const VertexType &dest) {
+  int srcIdx = position(src);
+  int destIdx = position(dest);
+  if (srcIdx == -1 || destIdx == -1) {
+    return -1;
+  }
+  return _compacted ? _matrix[srcIdx][destIdx] + _matrix[destIdx][srcIdx]
+                    : _matrix[srcIdx][destIdx];
+}
+
+/**
+ * @brief print the adjacency matrix of the graph and its properties.
+ *
+ */
+void Matrix::printMatrix() {
+  std::cout << "Adjacency Matrix info:" << std::endl;
+  std::cout << "\tVertices: " << _numOfVertices << std::endl;
+  std::cout << "\tEdges: " << _numOfEdges << std::endl;
+  std::cout << "\tDirected: " << _isDirected << std::endl;
+  std::cout << "\tCompacted: " << _compacted << std::endl;
+  std::cout << "Matrix:" << std::endl;
+  std::cout << "  ";
+  std::for_each(_vertexList.begin(), _vertexList.end(),
+                [](VertexType v) { std::cout << v << " "; });
+
+  std::cout << std::endl;
+  for (int i = 0; i < _numOfVertices; i++) {
+    std::cout << _vertexList[i] << " ";
+    for (int j = 0; j < _numOfVertices; j++) {
+      std::cout << _matrix[i][j] << " ";
+    }
+    std::cout << std::endl;
+  }
+}
+} // namespace common_graph_utils
